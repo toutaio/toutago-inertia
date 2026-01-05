@@ -22,23 +22,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 - Inertia request detection (X-Inertia header)
 - Version checking and conflict handling (409 responses)
-- External redirect support (X-Inertia-Location)
+- External redirect support (Location method + X-Inertia-Location)
+- Internal redirect support (Redirect method with 303 See Other)
+- Back navigation (using Referer header)
 - Partial reload support (X-Inertia-Partial-Data, RenderOnly)
 - Shared data management (static and lazy function-based)
+- Error pages with status codes
+- Validation errors support
+- Flash messages support
 - Asset versioning
 - JSON rendering with proper structure
 
-### Completed Tasks (28/158)
+### Completed Tasks (35/158)
 - Repository setup and structure ✅
 - Core type definitions ✅  
-- Basic Inertia protocol (New, Render, RenderOnly) ✅
+- Complete Inertia protocol (Render, RenderOnly, Location, Back, Redirect) ✅
 - Middleware implementation ✅
 - CI/CD setup ✅
 - Partial reload support ✅
 - Shared data (static + lazy functions) ✅
+- Redirect handling (internal + external) ✅
+- Error response support ✅
+- Validation errors & flash messages ✅
 - Test-driven development for core functionality ✅
 
-### Test Coverage: 90.1%
+### Test Coverage: 87.9% (37 tests passing)
 
 ### In Progress
 - Cosan router integration
