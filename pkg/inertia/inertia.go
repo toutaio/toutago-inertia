@@ -153,3 +153,32 @@ func (i *Inertia) Render(component string, props map[string]interface{}, url str
 
 	return page, nil
 }
+
+// RenderOnly creates an Inertia response with only specified props
+func (i *Inertia) RenderOnly(component string, props map[string]interface{}, url string, only []string) (*Page, error) {
+	if component == "" {
+		return nil, fmt.Errorf("inertia: component name is required")
+	}
+
+	if url == "" {
+		return nil, fmt.Errorf("inertia: URL is required")
+	}
+
+	if props == nil {
+		props = make(map[string]interface{})
+	}
+
+	// Filter props to only include requested ones
+	filteredProps := make(map[string]interface{})
+	for _, key := range only {
+		if val, ok := props[key]; ok {
+			filteredProps[key] = val
+		}
+	}
+
+	page := NewPage(component, filteredProps, url, i.version)
+	// Shared data is always included
+	page.MergeSharedData(i.GetSharedData())
+
+	return page, nil
+}
