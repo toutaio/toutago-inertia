@@ -16,24 +16,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Middleware implementation with Inertia protocol support
 - GitHub Actions CI workflow (test, lint, build)
 - golangci-lint configuration
-- Comprehensive test suite (80.8% coverage)
+- Comprehensive test suite (90.1% coverage)
 - Go module setup with dependencies
 
 ### Features
 - Inertia request detection (X-Inertia header)
 - Version checking and conflict handling (409 responses)
 - External redirect support (X-Inertia-Location)
-- Partial reload support (X-Inertia-Partial-Data)
-- Shared data management (static and function-based)
+- Partial reload support (X-Inertia-Partial-Data, RenderOnly)
+- Shared data management (static and lazy function-based)
 - Asset versioning
+- JSON rendering with proper structure
 
-### Completed Tasks (23/158)
+### Completed Tasks (28/158)
 - Repository setup and structure ✅
-- Core type definitions ✅
-- Basic Inertia protocol (New, Render, Share) ✅
+- Core type definitions ✅  
+- Basic Inertia protocol (New, Render, RenderOnly) ✅
 - Middleware implementation ✅
 - CI/CD setup ✅
+- Partial reload support ✅
+- Shared data (static + lazy functions) ✅
 - Test-driven development for core functionality ✅
+
+### Test Coverage: 90.1%
 
 ### In Progress
 - Cosan router integration
