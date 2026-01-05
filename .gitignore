@@ -1,0 +1,56 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.txt
+coverage.html
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Node modules (for NPM package)
+node_modules/
+npm/*/node_modules/
+
+# Build artifacts
+npm/*/dist/
+npm/*/lib/
+
+# SSR bundles
+ssr/bundles/
+
+# Example artifacts
+examples/*/public/build/
+examples/*/.ritual/
+examples/*/storage/
+
+# Logs
+*.log
