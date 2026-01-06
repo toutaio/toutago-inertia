@@ -38,13 +38,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Link component with external link detection
   - useForm composable with dirty tracking
   - usePageProps and usePage composables
+  - useRemember composable for state persistence across visits
   - Router with full Inertia.js protocol support
   - Server-side rendering (SSR) support
     - createInertiaSSRApp for server-side rendering
     - createSSRPage for HTML page template generation
     - XSS protection with automatic escaping
     - Version tracking in meta tags
-  - Comprehensive test suite (44 tests, 100% passing)
+  - Comprehensive test suite (56 tests, 100% passing)
   - Production build pipeline
     - ESM bundle (dist/index.mjs)
     - CommonJS bundle (dist/index.js)
