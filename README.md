@@ -12,10 +12,11 @@ Inertia.js adapter for the Toutā framework. Build modern single-page applicatio
 - 🎨 **Vue 3 Support** - First-class Vue 3 integration with SSR
 - ⚡ **Server-Side Rendering** - V8-powered SSR for SEO and performance
 - 🔒 **Type Safety** - Auto-generate TypeScript types from Go structs
-- 🔄 **Real-time Updates** - WebSocket integration with Scéla message bus
-- 🎯 **HTMX Support** - **NEW!** Full HTMX integration for hypermedia-driven apps
-- 🚀 **Lazy Props** - **NEW!** Performance optimization with deferred loading
-- ✅ **Validation Helpers** - **NEW!** Built-in error & flash message helpers
+- 🔄 **Real-time Updates** - WebSocket integration with `useLiveUpdate`
+- 📨 **Scéla Integration** - **NEW!** Message bus integration for pub/sub
+- 🎯 **HTMX Support** - Full HTMX integration for hypermedia-driven apps
+- 🚀 **Lazy Props** - Performance optimization with deferred loading
+- ✅ **Validation Helpers** - Built-in error & flash message helpers
 - 📦 **No API Needed** - Direct controller → component data flow
 - 🧪 **Well Tested** - Comprehensive test suite with >85% coverage
 
@@ -130,6 +131,7 @@ defineProps({
 
 - [Blog with SSR](examples/blog-vue/) - Complete blog application
 - [Real-time Chat](examples/realtime-chat/) - WebSocket-powered chat
+- [Scéla Integration](examples/scela-integration/) - Message bus with filtering
 
 ## Requirements
 
