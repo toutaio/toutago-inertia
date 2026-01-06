@@ -48,6 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 85% test coverage with 32 tests passing
   - Example integration showing build process usage
 - GitHub Actions CI workflow (test, lint, build)
+- NPM test workflow for Node 18, 20, 22
+- Integration test workflow for Go + NPM
+- Cross-platform compatibility testing (Linux, macOS, Windows)
+- Full-stack example application
+  - Complete backend with Go handlers
+  - Vue 3 frontend with TypeScript
+  - Pages: Home, Users (Index/Show), Posts (Index/Create), About
+  - Layout component with navigation
+  - Form handling with validation
+  - SSR configuration
+  - Vite build setup
 - GitHub workflow for NPM package testing (Node 18, 20, 22)
 - GitHub workflow for integration testing (Go + NPM)
 - GitHub workflow for cross-platform compatibility testing
