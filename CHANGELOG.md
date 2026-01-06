@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Performance Benchmarks** - Comprehensive benchmark suite
+  - BenchmarkRender - Basic rendering (~2.2μs, 31 allocs)
+  - BenchmarkRenderWithSharedData - With shared data (~2.7μs, 37 allocs)
+  - BenchmarkRenderWithLazyProps - With lazy evaluation (~2.3μs, 30 allocs)
+  - BenchmarkPartialReload - Partial reload performance (~3.1μs, 46 allocs)
+  - BenchmarkHTMXPartial - HTMX partial rendering (~732ns, 15 allocs)
 - **Improved Test Coverage** - Comprehensive testing for uncovered code
   - `ShareFunc()` - Lazy shared data function tests
   - `WithInfo()` - Info flash message tests
