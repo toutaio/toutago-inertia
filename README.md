@@ -13,7 +13,7 @@ Inertia.js adapter for the Toutā framework. Build modern single-page applicatio
 - ⚡ **Server-Side Rendering** - V8-powered SSR for SEO and performance
 - 🔒 **Type Safety** - Auto-generate TypeScript types from Go structs
 - 🔄 **Real-time Updates** - WebSocket integration with Scéla message bus
-- 🎯 **HTMX Alternative** - Optional HTMX support for simpler use cases
+- 🎯 **HTMX Support** - **NEW!** Full HTMX integration for hypermedia-driven apps
 - 📦 **No API Needed** - Direct controller → component data flow
 - 🧪 **Well Tested** - Comprehensive test suite with >85% coverage
 
@@ -118,6 +118,7 @@ defineProps({
 ## Documentation
 
 - [Getting Started Guide](docs/getting-started.md)
+- [HTMX Integration Guide](docs/HTMX.md) - **NEW!** Complete HTMX support
 - [Server-Side Rendering](docs/ssr.md)
 - [TypeScript Integration](docs/typescript.md)
 - [Real-time Updates](docs/realtime.md)
