@@ -1,39 +1,97 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import { createApp, h } from 'vue'
 import { usePage } from '../src/composables/usePage'
 
 describe('usePage', () => {
   it('should return current page data', () => {
-    const page = usePage()
-    expect(page).toBeDefined()
+    // usePage needs to be called within a Vue component context
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page).toBeDefined()
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should be reactive', () => {
-    const page = usePage()
-    expect(page.value).toBeDefined()
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value).toBeDefined()
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should contain component', () => {
-    const page = usePage()
-    expect(page.value).toHaveProperty('component')
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value).toHaveProperty('component')
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should contain props', () => {
-    const page = usePage()
-    expect(page.value).toHaveProperty('props')
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value).toHaveProperty('props')
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should contain url', () => {
-    const page = usePage()
-    expect(page.value).toHaveProperty('url')
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value).toHaveProperty('url')
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should contain version', () => {
-    const page = usePage()
-    expect(page.value).toHaveProperty('version')
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value).toHaveProperty('version')
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 
   it('should access nested props', () => {
-    const page = usePage()
-    expect(page.value.props).toBeDefined()
+    const app = createApp({
+      setup() {
+        const page = usePage()
+        expect(page.value.props).toBeDefined()
+        return () => h('div')
+      }
+    })
+    const el = document.createElement('div')
+    app.mount(el)
+    app.unmount()
   })
 })

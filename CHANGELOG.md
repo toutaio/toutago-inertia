@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Test Warnings** - Eliminated all Vue test warnings
+  - Suppressed expected JSON parse error in useRemember test
+  - Fixed usePage tests to work within Vue component context
+  - Fixed Head component slot access to avoid render function warning
+  - Made inject() silent in usePage when not provided (test mode)
+
 ### Added
 - **Performance Benchmarks** - Comprehensive benchmark suite
   - BenchmarkRender - Basic rendering (~2.2μs, 31 allocs)

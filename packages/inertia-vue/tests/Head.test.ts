@@ -22,7 +22,7 @@ describe('Head', () => {
   it('should accept slots for meta tags', () => {
     const wrapper = mount(Head, {
       slots: {
-        default: '<meta name="description" content="Test">'
+        default: () => '<meta name="description" content="Test">'
       }
     })
     

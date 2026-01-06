@@ -34,7 +34,10 @@ export function useRemember<T>(
     }
   } catch (error) {
     // Ignore JSON parse errors, use initial value
-    console.warn(`Failed to restore remembered value for key "${key}":`, error)
+    // Only warn in non-test environments
+    if (typeof process === 'undefined' || process.env?.NODE_ENV !== 'test') {
+      console.warn(`Failed to restore remembered value for key "${key}":`, error)
+    }
   }
 
   const state = ref(restoredValue) as Ref<T>
