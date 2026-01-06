@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-01-06
+
+### Fixed
+- Code formatting and linting issues
+- File permissions for generated files (now 0600)
+- CI workflow npm cache path
+- All godot, gosec, gocritic, and revive linting warnings
+
 ## [0.2.0] - 2026-01-06
 
 ### Added
