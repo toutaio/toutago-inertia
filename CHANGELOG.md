@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **HTMX Support** - Full integration with HTMX library
+  - `IsHTMXRequest()` - Detect HTMX requests via HX-Request header
+  - `GetHTMXHeaders()` - Extract all HTMX request headers
+  - `HTMXRedirect()` - Client-side redirects via HX-Redirect header
+  - `HTMXTrigger()` - Trigger client-side events
+  - `HTMXTriggerWithData()` - Trigger events with JSON payload
+  - `HTMXPartial()` - Render HTML partials
+  - `HTMXReswap()` - Change swap strategy (innerHTML, outerHTML, etc.)
+  - `HTMXRetarget()` - Change target element
+  - `HTMXPushURL()` - Push URL to browser history
+  - `HTMXReplaceURL()` - Replace URL in browser history
+  - `HTMXRefresh()` - Trigger page refresh
+  - Complete test coverage for all HTMX features
+
+### Changed
+- Test coverage improved from 68.6% to 70.9%
+- pkg/inertia coverage: 86.2% → 86.7%
+
 ## [0.3.0] - 2026-01-06
 
 ### Added
