@@ -14,11 +14,11 @@ import (
 func main() {
 	// Initialize Inertia
 	inertiaAdapter := inertia.New(inertia.Config{
-		RootView:    "app",
-		Version:     "1.0.0",
-		SSREnabled:  true,
-		SSRURL:      "http://localhost:13714",
-		AssetURL:    "/build",
+		RootView:     "app",
+		Version:      "1.0.0",
+		SSREnabled:   true,
+		SSRURL:       "http://localhost:13714",
+		AssetURL:     "/build",
 		ManifestPath: "public/build/manifest.json",
 	})
 

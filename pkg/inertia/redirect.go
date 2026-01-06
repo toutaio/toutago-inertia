@@ -47,8 +47,8 @@ func (i *Inertia) Redirect(w http.ResponseWriter, r *http.Request, url string) e
 	return nil
 }
 
-// Error creates an error page response
-func (i *Inertia) Error(status int, message string, url string, r *http.Request) (*Page, error) {
+// Error creates an error page response.
+func (i *Inertia) Error(status int, message, url string, _ *http.Request) (*Page, error) {
 	props := map[string]interface{}{
 		"status":  status,
 		"message": message,

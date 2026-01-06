@@ -86,16 +86,16 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: npm/inertia-vue/package-lock.json
+        cache-dependency-path: packages/inertia-vue/package-lock.json
 
     - name: Install dependencies
-      run: cd npm/inertia-vue && npm ci
+      run: npm ci --workspaces
 
     - name: Run linter
-      run: cd npm/inertia-vue && npm run lint
+      run: npm run lint --workspaces --if-present
 
     - name: Run tests
-      run: cd npm/inertia-vue && npm test
+      run: npm test --workspaces --if-present
 
     - name: Build package
-      run: cd npm/inertia-vue && npm run build
+      run: npm run build --workspaces --if-present

@@ -49,7 +49,7 @@ func TestMiddleware_DetectInertiaRequest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest("GET", "/test", nil)
+			req := httptest.NewRequest("GET", "/test", http.NoBody)
 			for k, v := range tt.headers {
 				req.Header.Set(k, v)
 			}
@@ -57,7 +57,7 @@ func TestMiddleware_DetectInertiaRequest(t *testing.T) {
 			w := httptest.NewRecorder()
 
 			called := false
-			handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 				called = true
 				isInertia := inertia.IsInertiaRequest(r)
 				assert.Equal(t, tt.wantInertia, isInertia)
@@ -80,11 +80,11 @@ func TestMiddleware_SetVersionHeader(t *testing.T) {
 
 	middleware := i.Middleware()
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
-	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
 
@@ -105,12 +105,12 @@ func TestMiddleware_VersionConflict(t *testing.T) {
 	middleware := i.Middleware()
 
 	// Client has old version
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	req.Header.Set("X-Inertia-Version", "1.0.0")
 	w := httptest.NewRecorder()
 
-	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
 
@@ -131,11 +131,11 @@ func TestMiddleware_ExternalRedirect(t *testing.T) {
 
 	middleware := i.Middleware()
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
-	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		// Signal external redirect (don't write status)
 		inertia.SetExternalRedirect(r, "https://external.com")
 		// Don't call w.WriteHeader - let middleware handle it
@@ -160,13 +160,13 @@ func TestMiddleware_PartialReload(t *testing.T) {
 	middleware := i.Middleware()
 
 	// Request only specific props
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	req.Header.Set("X-Inertia-Partial-Data", "user,posts")
 	req.Header.Set("X-Inertia-Partial-Component", "Users/Show")
 	w := httptest.NewRecorder()
 
-	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		// Get requested only props
 		only := inertia.GetPartialOnly(r)
 		assert.Equal(t, []string{"user", "posts"}, only)
@@ -190,11 +190,11 @@ func TestMiddleware_NonInertiaRequest(t *testing.T) {
 	middleware := i.Middleware()
 
 	// Normal browser request (no X-Inertia header)
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	w := httptest.NewRecorder()
 
 	called := false
-	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		called = true
 		// Should still work normally
 		w.WriteHeader(http.StatusOK)
@@ -223,7 +223,7 @@ func TestIsInertiaRequest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest("GET", "/test", nil)
+			req := httptest.NewRequest("GET", "/test", http.NoBody)
 			if tt.headerValue != "" {
 				req.Header.Set("X-Inertia", tt.headerValue)
 			}

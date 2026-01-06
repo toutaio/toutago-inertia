@@ -54,7 +54,7 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ctx := NewSimpleContext(w, r)
 		ictx := inertia.NewContext(ctx, inertiaMgr)
-		
+
 		err := ictx.Render("Home", map[string]interface{}{
 			"greeting": "Welcome to Inertia!",
 			"features": []string{
@@ -71,12 +71,12 @@ func main() {
 	mux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		ctx := NewSimpleContext(w, r)
 		ictx := inertia.NewContext(ctx, inertiaMgr)
-		
+
 		users := []map[string]interface{}{
 			{"id": 1, "name": "Alice", "email": "alice@example.com"},
 			{"id": 2, "name": "Bob", "email": "bob@example.com"},
 		}
-		
+
 		err := ictx.Render("Users/Index", map[string]interface{}{
 			"users": users,
 			"total": len(users),
@@ -89,7 +89,7 @@ func main() {
 	mux.HandleFunc("/users/create", func(w http.ResponseWriter, r *http.Request) {
 		ctx := NewSimpleContext(w, r)
 		ictx := inertia.NewContext(ctx, inertiaMgr)
-		
+
 		if r.Method == "GET" {
 			err := ictx.Render("Users/Create", map[string]interface{}{
 				"oldInput": map[string]string{},
@@ -99,18 +99,18 @@ func main() {
 			}
 			return
 		}
-		
+
 		// POST - create user
 		var input struct {
 			Name  string `json:"name"`
 			Email string `json:"email"`
 		}
-		
+
 		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 			ictx.Error(400, "Invalid input")
 			return
 		}
-		
+
 		errors := inertia.ValidationErrors{}
 		if input.Name == "" {
 			errors["name"] = []string{"Name is required"}
@@ -118,14 +118,14 @@ func main() {
 		if input.Email == "" {
 			errors["email"] = []string{"Email is required"}
 		}
-		
+
 		if len(errors) > 0 {
 			ictx.WithErrors(errors).Render("Users/Create", map[string]interface{}{
 				"oldInput": input,
 			})
 			return
 		}
-		
+
 		flash := inertia.Flash{"success": "User created successfully!"}
 		ictx.WithFlash(flash).Redirect("/users")
 	})

@@ -89,13 +89,13 @@ func (w *responseWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-// IsInertiaRequest checks if the request is an Inertia request
+// IsInertiaRequest checks if the request is an Inertia request.
 func IsInertiaRequest(r *http.Request) bool {
 	value := r.Header.Get("X-Inertia")
-	return strings.ToLower(value) == "true"
+	return strings.EqualFold(value, "true")
 }
 
-// GetPartialOnly returns the list of props to include in partial reload
+// GetPartialOnly returns the list of props to include in partial reload.
 func GetPartialOnly(r *http.Request) []string {
 	if only, ok := r.Context().Value(contextKeyPartialOnly).([]string); ok {
 		return only
@@ -103,7 +103,7 @@ func GetPartialOnly(r *http.Request) []string {
 	return nil
 }
 
-// GetPartialComponent returns the component name for partial reload
+// GetPartialComponent returns the component name for partial reload.
 func GetPartialComponent(r *http.Request) string {
 	if component, ok := r.Context().Value(contextKeyPartialComponent).(string); ok {
 		return component

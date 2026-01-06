@@ -121,7 +121,7 @@ func handleUsersList(i *inertia.Inertia) cosan.HandlerFunc {
 func handleUserDetail(i *inertia.Inertia) cosan.HandlerFunc {
 	return func(ctx *cosan.Context) error {
 		id := ctx.Param("id")
-		
+
 		var user *User
 		for _, u := range users {
 			if fmt.Sprintf("%d", u.ID) == id {

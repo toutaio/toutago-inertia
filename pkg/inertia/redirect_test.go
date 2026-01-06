@@ -19,7 +19,7 @@ func TestLocation_ExternalRedirect(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
@@ -41,7 +41,7 @@ func TestLocation_NonInertiaRequest(t *testing.T) {
 	require.NoError(t, err)
 
 	// Regular browser request
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	w := httptest.NewRecorder()
 
 	err = i.Location(w, req, "https://external.com")
@@ -61,7 +61,7 @@ func TestBack_InertiaRequest(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	req.Header.Set("Referer", "/previous-page")
 	w := httptest.NewRecorder()
@@ -83,7 +83,7 @@ func TestBack_NoReferer(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	// No referer header
 	w := httptest.NewRecorder()
@@ -105,7 +105,7 @@ func TestRedirect_InertiaRequest_GET(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
@@ -127,7 +127,7 @@ func TestRedirect_InertiaRequest_POST(t *testing.T) {
 	require.NoError(t, err)
 
 	// POST request
-	req := httptest.NewRequest("POST", "/test", nil)
+	req := httptest.NewRequest("POST", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
@@ -149,7 +149,7 @@ func TestRedirect_InertiaRequest_PUT(t *testing.T) {
 	require.NoError(t, err)
 
 	// PUT request
-	req := httptest.NewRequest("PUT", "/test", nil)
+	req := httptest.NewRequest("PUT", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 
@@ -169,7 +169,7 @@ func TestRedirect_NonInertiaRequest(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	// No X-Inertia header
 	w := httptest.NewRecorder()
 
@@ -190,7 +190,7 @@ func TestError_Response(t *testing.T) {
 	i, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/test", nil)
+	req := httptest.NewRequest("GET", "/test", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 
 	// Create error response

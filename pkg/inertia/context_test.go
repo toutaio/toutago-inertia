@@ -45,7 +45,7 @@ func TestInertiaContext_Render(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/users", nil)
+	req := httptest.NewRequest("GET", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -74,7 +74,7 @@ func TestInertiaContext_Redirect(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("POST", "/users", nil)
+	req := httptest.NewRequest("POST", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -98,7 +98,7 @@ func TestInertiaContext_Location(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/logout", nil)
+	req := httptest.NewRequest("GET", "/logout", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -122,7 +122,7 @@ func TestInertiaContext_Back(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/cancel", nil)
+	req := httptest.NewRequest("GET", "/cancel", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	req.Header.Set("Referer", "/users")
 	w := httptest.NewRecorder()
@@ -146,7 +146,7 @@ func TestInertiaContext_WithErrors(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("POST", "/users", nil)
+	req := httptest.NewRequest("POST", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -176,7 +176,7 @@ func TestInertiaContext_WithFlash(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/users", nil)
+	req := httptest.NewRequest("GET", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -208,7 +208,7 @@ func TestInertiaContext_Share(t *testing.T) {
 	// Global shared data
 	mgr.Share("appName", "Test App")
 
-	req := httptest.NewRequest("GET", "/users", nil)
+	req := httptest.NewRequest("GET", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	w := httptest.NewRecorder()
 	ctx := NewMockContext(w, req)
@@ -235,20 +235,20 @@ func TestInertiaContext_RenderOnly(t *testing.T) {
 	mgr, err := inertia.New(config)
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", "/users", nil)
+	req := httptest.NewRequest("GET", "/users", http.NoBody)
 	req.Header.Set("X-Inertia", "true")
 	req.Header.Set("X-Inertia-Partial-Data", "users")
 	req.Header.Set("X-Inertia-Partial-Component", "Users/Index")
 	w := httptest.NewRecorder()
-	
+
 	// Pass through middleware to set up context
 	middleware := mgr.Middleware()
 	var capturedReq *http.Request
-	handler := middleware(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	handler := middleware(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		capturedReq = r
 	}))
 	handler.ServeHTTP(w, req)
-	
+
 	// Now use the request with middleware-set context
 	w = httptest.NewRecorder()
 	ctx := NewMockContext(w, capturedReq)

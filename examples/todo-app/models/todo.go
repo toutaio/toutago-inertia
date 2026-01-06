@@ -23,9 +23,9 @@ type TodosFilter struct {
 
 // In-memory storage (for demo purposes)
 var (
-	todos      = make(map[int]*Todo)
-	todosmu    sync.RWMutex
-	nextID     = 1
+	todos   = make(map[int]*Todo)
+	todosmu sync.RWMutex
+	nextID  = 1
 )
 
 // InitSampleTodos initializes some sample todos

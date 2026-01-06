@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// ContextInterface defines the minimal interface that any router context must implement
+// ContextInterface defines the minimal interface that any router context must implement.
 type ContextInterface interface {
 	Request() *http.Request
 	Response() http.ResponseWriter
@@ -13,7 +13,7 @@ type ContextInterface interface {
 	Get(key string) interface{}
 }
 
-// InertiaContext wraps a router context and provides Inertia-specific methods
+// InertiaContext wraps a router context and provides Inertia-specific methods.
 type InertiaContext struct {
 	ctx           ContextInterface
 	mgr           *Inertia
@@ -23,7 +23,7 @@ type InertiaContext struct {
 	pendingFlash  Flash
 }
 
-// NewContext creates a new Inertia context wrapper
+// NewContext creates a new Inertia context wrapper.
 func NewContext(ctx ContextInterface, mgr *Inertia) *InertiaContext {
 	return &InertiaContext{
 		ctx:         ctx,
@@ -33,38 +33,38 @@ func NewContext(ctx ContextInterface, mgr *Inertia) *InertiaContext {
 	}
 }
 
-// Share adds context-specific shared data
+// Share adds context-specific shared data.
 func (ic *InertiaContext) Share(key string, value interface{}) *InertiaContext {
 	ic.sharedData[key] = value
 	return ic
 }
 
-// ShareFunc adds context-specific lazy shared data
+// ShareFunc adds context-specific lazy shared data.
 func (ic *InertiaContext) ShareFunc(key string, fn SharedDataFunc) *InertiaContext {
 	ic.sharedFuncs[key] = fn
 	return ic
 }
 
-// WithErrors adds validation errors to the next render
+// WithErrors adds validation errors to the next render.
 func (ic *InertiaContext) WithErrors(errors ValidationErrors) *InertiaContext {
 	ic.pendingErrors = errors
 	return ic
 }
 
-// WithFlash adds flash messages to the next render
+// WithFlash adds flash messages to the next render.
 func (ic *InertiaContext) WithFlash(flash Flash) *InertiaContext {
 	ic.pendingFlash = flash
 	return ic
 }
 
-// Render renders an Inertia page with context-specific data
+// Render renders an Inertia page with context-specific data.
 func (ic *InertiaContext) Render(component string, props map[string]interface{}) error {
 	req := ic.ctx.Request()
 	res := ic.ctx.Response()
 
 	// Get partial reload info
 	only := GetPartialOnly(req)
-	
+
 	// Merge context-specific shared data into props first
 	// (before filtering for partial reloads)
 	for key, value := range ic.sharedData {
@@ -112,22 +112,22 @@ func (ic *InertiaContext) Render(component string, props map[string]interface{})
 	return json.NewEncoder(res).Encode(page)
 }
 
-// Redirect performs an internal redirect
+// Redirect performs an internal redirect.
 func (ic *InertiaContext) Redirect(url string) error {
 	return ic.mgr.Redirect(ic.ctx.Response(), ic.ctx.Request(), url)
 }
 
-// Location performs an external redirect
+// Location performs an external redirect.
 func (ic *InertiaContext) Location(url string) error {
 	return ic.mgr.Location(ic.ctx.Response(), ic.ctx.Request(), url)
 }
 
-// Back redirects to the previous page
+// Back redirects to the previous page.
 func (ic *InertiaContext) Back() error {
 	return ic.mgr.Back(ic.ctx.Response(), ic.ctx.Request())
 }
 
-// Error renders an error page
+// Error renders an error page.
 func (ic *InertiaContext) Error(status int, message string) error {
 	page, err := ic.mgr.Error(status, message, ic.ctx.Request().URL.Path, ic.ctx.Request())
 	if err != nil {

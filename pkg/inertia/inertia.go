@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-// Response represents an Inertia.js page response
+// Response represents an Inertia.js page response.
 type Response struct {
 	Component string                 `json:"component"`
 	Props     map[string]interface{} `json:"props"`
@@ -14,13 +14,13 @@ type Response struct {
 	Version   string                 `json:"version"`
 }
 
-// MarshalJSON implements json.Marshaler
+// MarshalJSON implements json.Marshaler.
 func (r Response) MarshalJSON() ([]byte, error) {
 	type Alias Response
-	return json.Marshal((Alias)(r))
+	return json.Marshal(Alias(r))
 }
 
-// Page represents an Inertia page with all data
+// Page represents an Inertia page with all data.
 type Page struct {
 	Component string                 `json:"component"`
 	Props     map[string]interface{} `json:"props"`
@@ -28,7 +28,7 @@ type Page struct {
 	Version   string                 `json:"version"`
 }
 
-// NewPage creates a new Inertia page
+// NewPage creates a new Inertia page.
 func NewPage(component string, props map[string]interface{}, url, version string) *Page {
 	if props == nil {
 		props = make(map[string]interface{})

@@ -31,9 +31,9 @@ func HandleHome(adapter *inertia.Inertia) cosan.HandlerFunc {
 
 // TodosListPageProps defines props for the todos list page
 type TodosListPageProps struct {
-	Todos  []*models.Todo      `json:"todos"`
-	Filter models.TodosFilter  `json:"filter"`
-	Flash  map[string]string   `json:"flash,omitempty"`
+	Todos  []*models.Todo     `json:"todos"`
+	Filter models.TodosFilter `json:"filter"`
+	Flash  map[string]string  `json:"flash,omitempty"`
 }
 
 // HandleTodosList handles the todos list page
@@ -104,7 +104,7 @@ type TodosUpdateInput struct {
 func HandleTodosUpdate(adapter *inertia.Inertia) cosan.HandlerFunc {
 	return func(ctx *cosan.Context) error {
 		id := ctx.ParamInt("id")
-		
+
 		var input TodosUpdateInput
 		if err := ctx.BindJSON(&input); err != nil {
 			return ctx.InertiaValidationErrors(map[string]string{
@@ -172,7 +172,7 @@ func getCurrentUser(ctx *cosan.Context) *User {
 	if userID == nil {
 		return nil
 	}
-	
+
 	return &User{
 		ID:    userID.(int),
 		Name:  "John Doe",
