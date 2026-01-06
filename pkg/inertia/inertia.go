@@ -41,7 +41,7 @@ func NewPage(component string, props map[string]interface{}, url, version string
 	}
 }
 
-// MergeSharedData merges shared data into the page props
+// MergeSharedData merges shared data into the page props.
 func (p *Page) MergeSharedData(shared map[string]interface{}) {
 	for key, value := range shared {
 		// Don't overwrite existing props
@@ -51,7 +51,7 @@ func (p *Page) MergeSharedData(shared map[string]interface{}) {
 	}
 }
 
-// Config holds Inertia configuration
+// Config holds Inertia configuration.
 type Config struct {
 	RootView string // Path to root template
 	Version  string // Asset version
@@ -59,7 +59,7 @@ type Config struct {
 	AssetURL string // Base URL for assets
 }
 
-// Validate checks if the config is valid
+// Validate checks if the config is valid.
 func (c Config) Validate() error {
 	if c.RootView == "" {
 		return errors.New("inertia: RootView is required")
