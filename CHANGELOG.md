@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **API Documentation** - Complete API reference (API.md)
+  - Core API: New(), Render(), Share(), ShareFunc()
+  - Context methods: All 15+ context helpers
+  - Middleware: Request handling and headers
+  - TypeScript codegen: typegen.New(), Register(), GenerateFile()
+  - HTMX support: All HTMX helpers and headers
+  - Vue components: Link, Head
+  - Vue composables: usePage, useForm, useRemember
+  - Types, error handling, and best practices
+
 ### Fixed
 - **Test Warnings** - Eliminated all Vue test warnings
   - Suppressed expected JSON parse error in useRemember test
