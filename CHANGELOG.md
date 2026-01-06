@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ContextInterface for router-agnostic design**
 - **InertiaContext with all Inertia methods**
 - **NPM monorepo structure for client packages**
-- **@toutaio/inertia-vue package (v0.1.0)**
+- **@toutaio/inertia-vue package (v0.1.0)** ✅ **Build Complete**
   - Vue 3 adapter with full TypeScript support
   - createInertiaApp function for app initialization
   - **Link component with external link detection** ✨
@@ -33,7 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - XSS protection with automatic escaping
     - Version tracking in meta tags
   - Comprehensive test suite (69 tests, 100% passing) ✨
-  - Build pipeline with tsup (CJS, ESM, TypeScript declarations)
+  - **Production build pipeline** ✨
+    - ESM bundle (dist/index.mjs)
+    - CommonJS bundle (dist/index.js)
+    - TypeScript declarations (dist/index.d.ts)
+    - Built with tsup for optimal output
 - **TypeScript type generator (pkg/typegen)** ✨
   - Automatic Go struct to TypeScript interface conversion
   - Support for nested structs and inline types
