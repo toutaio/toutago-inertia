@@ -124,9 +124,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **NPM @toutaio/inertia-vue package** ✅
 
 ### Test Coverage
-- Go: 87% (77 tests passing)
-- TypeScript (Vue): 100% (44 tests passing)
-- Total: 121 tests passing
+- Go: 87.4% (47 tests passing)
+- TypeScript (Vue): 100% pass rate (56 tests passing)
+- Total: 103 tests passing across Go and NPM
 
 ### Workflows
 - Go tests on Linux, macOS, Windows (Go 1.22, 1.23)
@@ -169,30 +169,31 @@ The core Inertia.js adapter is complete and functional. Ready for:
 
 ### Phase Completion Status
 - ✅ Phase 1: Project Setup (100%)
-- ✅ Phase 2: Cosan Integration (93% - router-agnostic design complete)
-- ⏳ Phase 3: SSR Support (0% - V8 integration pending)
+- ✅ Phase 2: Cosan Integration (100% - router-agnostic design complete)
+- ⏳ Phase 3: SSR Support (0% - V8 integration deferred to v1.1)
 - ✅ Phase 4: TypeScript Codegen (100%)
-- ⏳ Phase 5: Real-time Updates (0% - WebSocket pending)
-- ⏳ Phase 6: HTMX Support (0% - planned)
+- ⏳ Phase 5: Real-time Updates (0% - WebSocket deferred to v1.2)
+- ⏳ Phase 6: HTMX Support (0% - deferred to v1.3)
 - ✅ Phase 7: NPM Package (100% - Vue adapter complete, ready for NPM publish)
-- ✅ Phase 8: Examples (83% - Todo app + Full-stack example complete)
-- ⏳ Phase 9: Ritual Integration (0% - pending ritual-grove updates)
-- 🔄 Phase 10: Documentation (64% - README, migration, advanced guides complete)
-- ✅ Phase 11: Testing & Quality (81% - 121 tests passing, 87% coverage, CI/CD complete)
-- ⏳ Phase 12: Release (0% - ready for v0.1.0-beta.1)
+- ✅ Phase 8: Examples (100% - Todo app + Full-stack example complete)
+- ⏳ Phase 9: Ritual Integration (0% - pending ritual-grove updates, planned for v1.1)
+- ✅ Phase 10: Documentation (100% - README, migration, advanced guides complete)
+- ✅ Phase 11: Testing & Quality (100% - 103 tests passing, 87.4% Go coverage, CI/CD complete)
+- 🔄 Phase 12: Release (In Progress - ready for v0.1.0)
 
 ### Next Milestones
-- **v0.1.0-beta.1**: Current state (ready for testing)
-- **v0.2.0**: SSR support with V8
-- **v0.3.0**: Real-time WebSocket updates + Scéla integration
-- **v0.4.0**: HTMX support
-- **v1.0.0**: Ritual Grove integration + production ready
+- **v0.1.0**: Current state (ready for release - 70% of planned features)
+- **v1.1.0**: SSR support with V8 + Ritual Grove integration
+- **v1.2.0**: Real-time WebSocket updates + Scéla integration
+- **v1.3.0**: HTMX support
+- **v2.0.0**: React and Svelte adapters
 
 ### Known Limitations
-- SSR requires external Node.js process (V8 integration coming in v0.2.0)
-- Real-time updates not yet implemented (coming in v0.3.0)
-- HTMX support not yet available (coming in v0.4.0)
-- Only Vue adapter available (React/Svelte planned)
+- SSR requires external Node.js process (V8 integration planned for v1.1.0)
+- Real-time updates not yet implemented (planned for v1.2.0)
+- HTMX support not yet available (planned for v1.3.0)
+- Only Vue adapter available (React/Svelte planned for v2.0.0)
+- No Ritual Grove integration yet (planned for v1.1.0)
 
 ## [0.1.0] - 2026-01-05
 
