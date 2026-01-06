@@ -28,6 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - usePageProps and usePage composables
   - Router with full Inertia.js protocol support
   - Server-side rendering (SSR) support
+- Complete Todo App example
+  - Full CRUD operations for todos
+  - Authentication flow with login/logout
+  - Form handling with validation
+  - Flash messages
+  - TypeScript type generation from Go structs
+  - SSR setup with separate server
+  - esbuild configuration for bundling
+  - Vue 3 components with composition API
     - createInertiaSSRApp for server-side rendering
     - createSSRPage for HTML page template generation
     - XSS protection with automatic escaping

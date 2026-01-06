@@ -1,0 +1,23 @@
+{
+  "name": "@toutaio/inertia-example-todo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node build.js --watch",
+    "build": "node build.js",
+    "ssr:dev": "node build.js --ssr --watch",
+    "ssr:serve": "node ssr-server.js",
+    "typegen": "go run cmd/typegen/main.go"
+  },
+  "dependencies": {
+    "@toutaio/inertia-vue": "workspace:*",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0"
+  }
+}
