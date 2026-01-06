@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 	"testing"
-	
+
 	"github.com/toutaio/toutago-inertia/pkg/ssr"
 )
 
@@ -152,4 +152,3 @@ func TestSSRWithComplexData(t *testing.T) {
 		}
 	})
 }
-

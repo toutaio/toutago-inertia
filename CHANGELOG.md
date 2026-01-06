@@ -8,6 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Real-time WebSocket Updates** - Full WebSocket support for live updates
+  - New `pkg/realtime` package with WebSocket hub
+  - Channel-based message broadcasting
+  - Client connection management with auto-cleanup
+  - `Hub.Run()` for managing WebSocket lifecycle
+  - `Hub.Broadcast()` and `Hub.Publish()` for sending messages
+  - `HandleWebSocket()` for HTTP upgrade handling
+  - Auto-reconnection with configurable retry logic
+  - 12 realtime package tests (35.2% coverage)
+  - Dependency: github.com/gorilla/websocket@v1.5.3
+- **useLiveUpdate Composable** - Vue 3 composable for real-time updates
+  - `useLiveUpdate(url, options)` with connection management
+  - `on(channel, handler)` for subscribing to channels
+  - `off(channel, handler)` for unsubscribing
+  - Reactive `connected` and `error` state
+  - Auto-reconnection with configurable delays
+  - Maximum reconnection attempts limit
+  - Automatic cleanup on component unmount
+  - 12 composable tests (100% pass rate)
+  - 73 total Vue tests passing
+- **Real-time Chat Example** - Complete WebSocket chat application
+  - Backend with WebSocket hub and message broadcasting
+  - Vue chat interface with real-time message updates
+  - Connection status indicator
+  - Auto-reconnection demonstration
+  - Documentation and setup guide (examples/chat/README.md)
+
+### Fixed
+- Component context detection in useLiveUpdate to avoid warnings
+- Test coverage reporting for all packages
+
+## [0.5.0] - 2024-01-06
+
+### Added
 - **Server-Side Rendering (SSR)** - V8-based SSR support
   - New `pkg/ssr` package with V8 renderer
   - Context pooling for performance (configurable pool size)

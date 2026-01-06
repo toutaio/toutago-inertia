@@ -4,6 +4,7 @@ export { default as Head } from './components/Head.vue'
 export { useForm } from './composables/useForm'
 export { usePage } from './composables/usePage'
 export { useRemember } from './composables/useRemember'
+export { useLiveUpdate } from './composables/useLiveUpdate'
 export { withLayout, resolvePageLayout } from './utils/layout'
 
 export type {
