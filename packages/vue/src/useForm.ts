@@ -1,5 +1,6 @@
-import { reactive, computed, watch, nextTick } from 'vue'
-import { router, VisitOptions } from './router'
+import { reactive, computed } from 'vue'
+import { router } from './router'
+import { VisitOptions } from './types'
 
 export interface FormData {
   [key: string]: any
@@ -48,10 +49,10 @@ export function useForm<T extends FormData>(initialData: T): Form<T> {
 
   const form = {
     get data() {
-      return state.data
+      return state.data as T
     },
     set data(value: T) {
-      state.data = value
+      state.data = value as any
     },
     get errors() {
       return state.errors
@@ -89,10 +90,10 @@ export function useForm<T extends FormData>(initialData: T): Form<T> {
 
     reset(...fields: (keyof T)[]) {
       if (fields.length === 0) {
-        state.data = JSON.parse(JSON.stringify(defaults)) as T
+        state.data = JSON.parse(JSON.stringify(defaults)) as any
       } else {
         fields.forEach((field) => {
-          state.data[field] = JSON.parse(JSON.stringify(defaults[field]))
+          (state.data as any)[field] = JSON.parse(JSON.stringify(defaults[field]))
         })
       }
     },
@@ -120,7 +121,7 @@ export function useForm<T extends FormData>(initialData: T): Form<T> {
           state.processing = true
           options.onStart?.()
         },
-        onProgress: (progress) => {
+        onProgress: (progress: any) => {
           state.progress = progress
           options.onProgress?.(progress)
         },
