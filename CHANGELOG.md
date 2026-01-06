@@ -8,17 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+#### Core Go Package
 - Initial project structure with MIT License
 - README with badges, quick start, and documentation links
 - Contributing guidelines with TDD approach
 - Core Inertia types (Response, Config, Page, SharedDataFunc)
-- Inertia instance with shared data management  
+- Inertia instance with shared data management (static + lazy evaluation)
 - Middleware implementation with Inertia protocol support
 - Redirect and navigation helpers (Location, Back, Redirect)
 - Error handling and validation support
 - Context wrapper for router integration
 - ContextInterface for router-agnostic design
 - InertiaContext with all Inertia methods
+- Comprehensive test suite (47 Go tests, 87.4% coverage)
+
+#### TypeScript Type Generation
+- TypeScript type generator (pkg/typegen)
+  - Automatic Go struct to TypeScript interface conversion
+  - Support for json and ts struct tags
+  - Nested struct, slice, and map handling
+  - 32 tests with 66.7% coverage
+
+#### NPM Packages
 - NPM monorepo structure for client packages
 - @toutaio/inertia-vue package (v0.1.0)
   - Vue 3 adapter with full TypeScript support
@@ -28,6 +40,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - usePageProps and usePage composables
   - Router with full Inertia.js protocol support
   - Server-side rendering (SSR) support
+    - createInertiaSSRApp for server-side rendering
+    - createSSRPage for HTML page template generation
+    - XSS protection with automatic escaping
+    - Version tracking in meta tags
+  - Comprehensive test suite (44 tests, 100% passing)
+  - Production build pipeline
+    - ESM bundle (dist/index.mjs)
+    - CommonJS bundle (dist/index.js)
+    - TypeScript declarations (dist/index.d.ts)
+    - Built with tsup for optimal output
+
+#### Examples
 - Complete Todo App example
   - Full CRUD operations for todos
   - Authentication flow with login/logout
@@ -37,29 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - SSR setup with separate server
   - esbuild configuration for bundling
   - Vue 3 components with composition API
-    - createInertiaSSRApp for server-side rendering
-    - createSSRPage for HTML page template generation
-    - XSS protection with automatic escaping
-    - Version tracking in meta tags
-  - Comprehensive test suite (69 tests, 100% passing)
-  - Production build pipeline
-    - ESM bundle (dist/index.mjs)
-    - CommonJS bundle (dist/index.js)
-    - TypeScript declarations (dist/index.d.ts)
-    - Built with tsup for optimal output
-- TypeScript type generator (pkg/typegen)
-  - Automatic Go struct to TypeScript interface conversion
-  - Support for nested structs and inline types
-  - Optional field detection (pointers and omitempty)
-  - Comprehensive type mapping (primitives, time.Time, arrays, maps)
-  - Custom indentation and header options
-  - CLI tool for type generation (cmd/inertia-typegen)
-  - 85% test coverage with 32 tests passing
-  - Example integration showing build process usage
-- GitHub Actions CI workflow (test, lint, build)
-- NPM test workflow for Node 18, 20, 22
-- Integration test workflow for Go + NPM
-- Cross-platform compatibility testing (Linux, macOS, Windows)
+- Basic HTTP context example
+- Type generation example  
 - Full-stack example application
   - Complete backend with Go handlers
   - Vue 3 frontend with TypeScript
@@ -68,17 +71,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Form handling with validation
   - SSR configuration
   - Vite build setup
-- GitHub workflow for NPM package testing (Node 18, 20, 22)
-- GitHub workflow for integration testing (Go + NPM)
-- GitHub workflow for cross-platform compatibility testing
+
+#### CI/CD & Quality
+- GitHub Actions CI workflow (Go test, lint, build)
+- NPM test workflow for Node 18, 20, 22
+- Integration test workflow combining Go + NPM tests
+- Cross-platform compatibility testing (Linux, macOS, Windows)
 - Test coverage reporting via Codecov
 - golangci-lint configuration
-- Comprehensive test suite (87% coverage Go, 101 tests passing total)
-- Go module setup with dependencies
-- Getting started documentation
-- Basic example application
-- HTTP context wrapper example
-- TypeScript type generation example
+- Total: 91 tests passing (47 Go + 44 NPM)
+- Coverage: 87.4% Go, 100% NPM test pass rate
 
 ### Features
 - Inertia request detection (X-Inertia header)
