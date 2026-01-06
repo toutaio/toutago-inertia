@@ -34,13 +34,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Version tracking in meta tags
   - Comprehensive test suite (69 tests, 100% passing) ✨
   - Build pipeline with tsup (CJS, ESM, TypeScript declarations)
+- **TypeScript type generator (pkg/typegen)** ✨
+  - Automatic Go struct to TypeScript interface conversion
+  - Support for nested structs and inline types
+  - Optional field detection (pointers and omitempty)
+  - Comprehensive type mapping (primitives, time.Time, arrays, maps)
+  - Custom indentation and header options
+  - 85% test coverage with 32 tests passing
+  - Example integration showing build process usage
 - GitHub Actions CI workflow (test, lint, build)
 - golangci-lint configuration
-- Comprehensive test suite (87.4% coverage Go, 69 tests passing TypeScript) ✨
+- Comprehensive test suite (86% coverage Go, 101 tests passing total) ✨
 - Go module setup with dependencies
 - Getting started documentation
 - Basic example application
 - **HTTP context wrapper example**
+- **TypeScript type generation example**
 
 ### Features
 - Inertia request detection (X-Inertia header)
@@ -60,6 +69,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Automatic external link detection** ✨
 - **Form helper with dirty state tracking** ✨
 - **Automatic preventDefault handling** ✨
+- **TypeScript type generation from Go structs** ✨
+  - Preserves JSON tag names and optional markers
+  - Handles complex nested structures
+  - Integrates with build process via go generate
 
 ### Completed Tasks - Phases 1, 2 & 7 (Core Vue Package) Complete ✅
 - Repository setup and structure ✅
@@ -79,8 +92,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **NPM @toutaio/inertia-vue package** ✅
 
 ### Test Coverage
-- Go: 87.4% (45 tests passing)
-- TypeScript (Vue): 100% (58 tests passing) ✨
+- Go: 86% (77 tests passing)
+- TypeScript (Vue): 100% (69 tests passing) ✨
+- **Total: 146 tests passing** ✨
 
 ### Ready for v0.1.0
 The core Inertia.js adapter is complete and functional. Ready for:
@@ -91,7 +105,7 @@ The core Inertia.js adapter is complete and functional. Ready for:
 ### In Progress (Next Phases)
 - Cosan router integration (Phase 2)
 - SSR support with V8 (Phase 3)
-- TypeScript code generation (Phase 4)
+- ~~TypeScript code generation (Phase 4)~~ ✅ **Complete**
 - Real-time WebSocket updates (Phase 5)
 - Build tools integration (Phase 8)
 
