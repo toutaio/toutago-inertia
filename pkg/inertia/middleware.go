@@ -17,6 +17,8 @@ const (
 )
 
 // Middleware returns an HTTP middleware that handles Inertia requests.
+//
+//nolint:gocognit // Middleware complexity is acceptable given the protocol requirements.
 func (i *Inertia) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -14,6 +14,8 @@ type ContextInterface interface {
 }
 
 // InertiaContext wraps a router context and provides Inertia-specific methods.
+//
+//nolint:revive // InertiaContext name is intentional for clarity in Inertia-specific context.
 type InertiaContext struct {
 	ctx           ContextInterface
 	mgr           *Inertia
