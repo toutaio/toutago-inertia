@@ -2,16 +2,209 @@
 
 ## Table of Contents
 
-1. [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
-2. [TypeScript Type Generation](#typescript-type-generation)
-3. [Advanced Form Handling](#advanced-form-handling)
-4. [Lazy Data Evaluation](#lazy-data-evaluation)
-5. [Asset Versioning](#asset-versioning)
-6. [Partial Reloads](#partial-reloads)
-7. [Custom Context Wrappers](#custom-context-wrappers)
-8. [Error Handling](#error-handling)
-9. [Testing](#testing)
-10. [Performance Optimization](#performance-optimization)
+1. [Validation & Flash Helpers](#validation--flash-helpers)
+2. [Lazy Props & Performance](#lazy-props--performance)
+3. [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
+4. [TypeScript Type Generation](#typescript-type-generation)
+5. [Advanced Form Handling](#advanced-form-handling)
+6. [Asset Versioning](#asset-versioning)
+7. [Partial Reloads](#partial-reloads)
+8. [Custom Context Wrappers](#custom-context-wrappers)
+9. [Error Handling](#error-handling)
+10. [Testing](#testing)
+11. [Performance Optimization](#performance-optimization)
+
+## Validation & Flash Helpers
+
+### Validation Helpers
+
+Simplify error handling with built-in validation helpers.
+
+```go
+func CreateUser(ctx *YourContext) error {
+    ic := inertia.NewContext(ctx, mgr)
+    
+    // Simple chaining
+    if email == "" || !isValid(email) {
+        return ic.
+            WithError("email", "Email is required").
+            WithError("email", "Email must be valid").
+            Back()
+    }
+    
+    // Or build manually
+    errors := inertia.NewValidationErrors()
+    errors.Add("name", "Name is required")
+    errors.Add("email", "Email must be valid")
+    
+    if errors.Any() {
+        return ic.WithErrors(errors).Back()
+    }
+    
+    // Success
+    return ic.WithSuccess("User created!").Redirect("/users")
+}
+```
+
+**Validation Methods:**
+- `NewValidationErrors()` - Create new instance
+- `Add(field, message)` - Add error to field
+- `Has(field)` - Check if field has errors
+- `First(field)` - Get first error for field
+- `Any()` - Check if any errors exist
+
+### Flash Message Helpers
+
+Show temporary messages to users.
+
+```go
+func UpdateProfile(ctx *YourContext) error {
+    ic := inertia.NewContext(ctx, mgr)
+    
+    // Different message types
+    return ic.
+        WithSuccess("Profile updated successfully").
+        WithWarning("Subscription expires in 7 days").
+        WithInfo("Check your email for confirmation").
+        Redirect("/profile")
+}
+
+// Or build flash manually
+flash := inertia.NewFlash()
+flash.Success("Operation completed")
+flash.Error("Something went wrong")
+flash.Warning("Please review changes")
+flash.Info("For your information")
+flash.Custom("customKey", "Custom message")
+
+return ic.WithFlash(flash).Back()
+```
+
+**Flash Methods:**
+- `NewFlash()` - Create new instance
+- `Success(msg)` - Add success message
+- `Error(msg)` - Add error message
+- `Warning(msg)` - Add warning message
+- `Info(msg)` - Add info message
+- `Custom(key, msg)` - Add custom message
+
+### Client-Side Usage
+
+```vue
+<script setup>
+import { useForm } from '@toutaio/inertia-vue'
+
+const form = useForm({
+    email: '',
+    password: '',
+})
+</script>
+
+<template>
+    <!-- Validation errors -->
+    <div v-if="form.errors.email" class="error">
+        {{ form.errors.email[0] }}
+    </div>
+    
+    <!-- Flash messages -->
+    <div v-if="$page.props.success" class="alert-success">
+        {{ $page.props.success }}
+    </div>
+    <div v-if="$page.props.error" class="alert-danger">
+        {{ $page.props.error }}
+    </div>
+</template>
+```
+
+## Lazy Props & Performance
+
+Optimize performance by deferring expensive computations.
+
+### Types of Lazy Props
+
+**1. Lazy() - Excluded from partial reloads**
+```go
+ic.Lazy("analytics", func() interface{} {
+    return calculateAnalytics() // Only on full page load
+})
+```
+
+**2. AlwaysLazy() - Always included, but lazily evaluated**
+```go
+ic.AlwaysLazy("auth", func() interface{} {
+    return getCurrentUser() // Always included, computed once
+})
+```
+
+**3. Defer() - Only when explicitly requested**
+```go
+ic.Defer("comments", func() interface{} {
+    return loadComments() // Only when client requests
+})
+```
+
+### Complete Example
+
+```go
+func ShowDashboard(ctx *YourContext) error {
+    ic := inertia.NewContext(ctx, mgr)
+    
+    return ic.
+        // Always included
+        AlwaysLazy("auth", func() interface{} {
+            return map[string]interface{}{
+                "user":        getCurrentUser(ctx),
+                "permissions": loadPermissions(ctx),
+            }
+        }).
+        // Skipped on navigation
+        Lazy("stats", func() interface{} {
+            return calculateDashboardStats()
+        }).
+        // Only when requested
+        Defer("auditLog", func() interface{} {
+            return loadFullAuditLog()
+        }).
+        Render("Dashboard/Index", map[string]interface{}{
+            "title": "Dashboard",
+        })
+}
+```
+
+### Client-Side Deferred Loading
+
+```javascript
+import { router } from '@inertiajs/vue3'
+
+// Load deferred prop on demand
+function loadComments() {
+    router.reload({
+        only: ['comments'], // Request specific props
+    })
+}
+```
+
+### Performance Benefits
+
+```go
+// ❌ Bad - always runs expensive query
+func ShowPost(ctx *YourContext) error {
+    relatedPosts := findRelatedPosts() // Runs every time!
+    
+    return ic.Render("Posts/Show", map[string]interface{}{
+        "related": relatedPosts,
+    })
+}
+
+// ✅ Good - only runs when needed
+func ShowPost(ctx *YourContext) error {
+    return ic.
+        Lazy("related", func() interface{} {
+            return findRelatedPosts() // Only on full load
+        }).
+        Render("Posts/Show", props)
+}
+```
 
 ## Server-Side Rendering (SSR)
 

@@ -14,6 +14,8 @@ Inertia.js adapter for the Toutā framework. Build modern single-page applicatio
 - 🔒 **Type Safety** - Auto-generate TypeScript types from Go structs
 - 🔄 **Real-time Updates** - WebSocket integration with Scéla message bus
 - 🎯 **HTMX Support** - **NEW!** Full HTMX integration for hypermedia-driven apps
+- 🚀 **Lazy Props** - **NEW!** Performance optimization with deferred loading
+- ✅ **Validation Helpers** - **NEW!** Built-in error & flash message helpers
 - 📦 **No API Needed** - Direct controller → component data flow
 - 🧪 **Well Tested** - Comprehensive test suite with >85% coverage
 
