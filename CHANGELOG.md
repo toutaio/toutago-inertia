@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Optional field detection (pointers and omitempty)
   - Comprehensive type mapping (primitives, time.Time, arrays, maps)
   - Custom indentation and header options
+  - CLI tool for type generation (cmd/inertia-typegen)
   - 85% test coverage with 32 tests passing
   - Example integration showing build process usage
 - GitHub Actions CI workflow (test, lint, build)

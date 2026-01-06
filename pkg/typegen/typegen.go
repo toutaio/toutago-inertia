@@ -2,10 +2,50 @@ package typegen
 
 import (
 "fmt"
+"os"
+"path/filepath"
 "reflect"
 "strings"
 "time"
 )
+
+// Generator manages TypeScript type generation
+type Generator struct {
+types map[string]interface{}
+}
+
+// New creates a new Generator instance
+func New() *Generator {
+return &Generator{
+types: make(map[string]interface{}),
+}
+}
+
+// Register adds a type to be generated
+func (g *Generator) Register(name string, v interface{}) {
+g.types[name] = v
+}
+
+// GenerateFile generates a TypeScript file with all registered types
+func (g *Generator) GenerateFile(path string) error {
+content, err := GenerateTypeScriptFile(g.types)
+if err != nil {
+return err
+}
+
+// Create directory if it doesn't exist
+dir := filepath.Dir(path)
+if err := os.MkdirAll(dir, 0755); err != nil {
+return fmt.Errorf("failed to create directory: %w", err)
+}
+
+// Write file
+if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+return fmt.Errorf("failed to write file: %w", err)
+}
+
+return nil
+}
 
 // GenerateTypeScriptInterface generates a TypeScript interface from a Go struct
 func GenerateTypeScriptInterface(v interface{}) (string, error) {
