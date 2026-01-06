@@ -13,6 +13,7 @@
 9. [Error Handling](#error-handling)
 10. [Testing](#testing)
 11. [Performance Optimization](#performance-optimization)
+12. [Scéla Message Bus Integration](#scéla-message-bus-integration)
 
 ## Validation & Flash Helpers
 
@@ -878,6 +879,172 @@ func main() {
     http.ListenAndServe(":3000", compressed)
 }
 ```
+
+## Scéla Message Bus Integration
+
+Integrate Toutā's Scéla message bus with Inertia.js real-time updates for seamless pub/sub messaging.
+
+### Basic Setup
+
+```go
+import (
+    "github.com/toutaio/toutago-inertia/pkg/realtime"
+    "github.com/toutaio/toutago-scela-bus/pkg/scela"
+)
+
+func main() {
+    // Create Scéla bus
+    bus := scela.New()
+    defer bus.Close()
+    
+    // Create WebSocket hub
+    hub := realtime.NewHub()
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+    go hub.Run(ctx)
+    
+    // Create adapter to bridge Scéla to WebSocket
+    adapter := realtime.NewScelaAdapter(bus, hub)
+    defer adapter.Close()
+    
+    // Now messages published to Scéla are forwarded to WebSocket clients
+}
+```
+
+### Publishing Messages
+
+Publish from anywhere in your application:
+
+```go
+// Simple publish
+bus.Publish(ctx, "chat.messages", map[string]interface{}{
+    "user":    "Alice",
+    "message": "Hello!",
+})
+
+// Pattern-based topics
+bus.Publish(ctx, "user.created", userData)      // Matches "user.*"
+bus.Publish(ctx, "notifications.urgent", alert) // Matches "notifications.*"
+```
+
+### Message Filtering
+
+Filter which messages reach WebSocket clients:
+
+```go
+// Only forward public messages
+filter := func(topic string, message interface{}) bool {
+    if m, ok := message.(map[string]interface{}); ok {
+        return m["public"] != false
+    }
+    return true
+}
+
+adapter := realtime.NewScelaAdapter(bus, hub, realtime.WithFilter(filter))
+```
+
+### Pattern Matching
+
+Clients subscribe to topic patterns:
+
+```typescript
+// Frontend Vue component
+const ws = new WebSocket('ws://localhost:3000/ws')
+
+ws.onopen = () => {
+    // Exact match
+    ws.send(JSON.stringify({
+        type: 'subscribe',
+        channel: 'chat.messages'
+    }))
+    
+    // Pattern matching
+    ws.send(JSON.stringify({
+        type: 'subscribe',
+        channel: 'user.*'  // Matches user.created, user.updated, etc.
+    }))
+    
+    ws.send(JSON.stringify({
+        type: 'subscribe',
+        channel: 'notifications.*'
+    }))
+}
+
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data)
+    // Handle real-time update
+}
+```
+
+### Use Cases
+
+**Background Jobs:**
+```go
+go func() {
+    ticker := time.NewTicker(30 * time.Second)
+    for {
+        select {
+        case <-ticker.C:
+            status := getSystemStatus()
+            bus.Publish(ctx, "system.status", status)
+        case <-ctx.Done():
+            return
+        }
+    }
+}()
+```
+
+**Event-Driven Architecture:**
+```go
+// Service A: User service
+func CreateUser(user User) error {
+    // Save user
+    saveUser(user)
+    
+    // Publish event - automatically forwarded to WebSocket
+    bus.Publish(ctx, "user.created", user)
+    return nil
+}
+
+// Service B: Email service (listening to Scéla)
+bus.Subscribe("user.created", scela.HandlerFunc(func(ctx context.Context, msg scela.Message) error {
+    user := msg.Payload().(User)
+    return sendWelcomeEmail(user)
+}))
+
+// Service C: WebSocket clients automatically receive update via adapter
+```
+
+**Decoupled Real-Time:**
+```go
+// Backend doesn't know about WebSocket
+func ProcessOrder(order Order) {
+    processOrder(order)
+    
+    // Just publish to bus
+    bus.Publish(ctx, "orders.processed", order)
+    
+    // Scéla adapter forwards to subscribed WebSocket clients
+}
+```
+
+### Benefits
+
+1. **Decoupling**: Backend services publish to Scéla without WebSocket knowledge
+2. **Flexibility**: Pattern matching enables flexible subscriptions
+3. **Security**: Filters control what reaches clients vs internal-only messages
+4. **Scalability**: Scéla handles message distribution efficiently
+5. **Testing**: Easy to test by publishing to bus
+6. **Event Sourcing**: Complete message history via Scéla persistence
+
+### Example
+
+See [examples/scela-integration](../examples/scela-integration) for a complete working example with:
+- Message filtering
+- Pattern matching
+- Background jobs
+- Multiple channel subscriptions
+- Frontend Vue integration
 
 ## Next Steps
 
