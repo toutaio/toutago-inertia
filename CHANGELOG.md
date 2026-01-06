@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Vue 3 frontend with TypeScript
   - Pages: Home, Users (Index/Show), Posts (Index/Create), About
   - Layout component with navigation
+  - Nested layouts example (Admin Dashboard)
   - Form handling with validation
   - SSR configuration
   - Vite build setup
