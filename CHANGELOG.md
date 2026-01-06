@@ -141,12 +141,51 @@ The core Inertia.js adapter is complete and functional. Ready for:
 - SSR implementation
 - Production usage (without SSR)
 
-### In Progress (Next Phases)
-- Cosan router integration (Phase 2)
-- SSR support with V8 (Phase 3)
-- ~~TypeScript code generation (Phase 4)~~ ✅ **Complete**
-- Real-time WebSocket updates (Phase 5)
-- Build tools integration (Phase 8)
+#### Documentation
+- Comprehensive migration guide
+  - Step-by-step migration from traditional Go apps
+  - Template to Vue component conversion
+  - Form handling migration
+  - Authentication patterns
+  - Complete migration checklist
+- Advanced usage guide
+  - Server-side rendering (SSR) setup
+  - TypeScript type generation patterns
+  - Advanced form handling (file uploads, validation)
+  - Lazy data evaluation
+  - Asset versioning
+  - Partial reloads optimization
+  - Custom context wrappers
+  - Error handling strategies
+  - Testing approaches
+  - Performance optimization techniques
+
+### Phase Completion Status
+- ✅ Phase 1: Project Setup (100%)
+- ✅ Phase 2: Cosan Integration (93% - router-agnostic design complete)
+- ⏳ Phase 3: SSR Support (0% - V8 integration pending)
+- ✅ Phase 4: TypeScript Codegen (100%)
+- ⏳ Phase 5: Real-time Updates (0% - WebSocket pending)
+- ⏳ Phase 6: HTMX Support (0% - planned)
+- ✅ Phase 7: NPM Package (97% - Vue adapter complete, pending NPM publish)
+- ✅ Phase 8: Examples (83% - Todo app + Full-stack example complete)
+- ⏳ Phase 9: Ritual Integration (0% - pending ritual-grove updates)
+- 🔄 Phase 10: Documentation (20% - README, migration, advanced guides complete)
+- ✅ Phase 11: Testing & Quality (75% - 121 tests passing, 87% coverage)
+- ⏳ Phase 12: Release (0% - ready for v0.1.0-beta.1)
+
+### Next Milestones
+- **v0.1.0-beta.1**: Current state (ready for testing)
+- **v0.2.0**: SSR support with V8
+- **v0.3.0**: Real-time WebSocket updates + Scéla integration
+- **v0.4.0**: HTMX support
+- **v1.0.0**: Ritual Grove integration + production ready
+
+### Known Limitations
+- SSR requires external Node.js process (V8 integration coming in v0.2.0)
+- Real-time updates not yet implemented (coming in v0.3.0)
+- HTMX support not yet available (coming in v0.4.0)
+- Only Vue adapter available (React/Svelte planned)
 
 ## [0.1.0] - 2026-01-05
 
