@@ -184,3 +184,164 @@ func TestGetHTMXHeaders(t *testing.T) {
 	assert.Equal(t, "submitBtn", headers.TriggerName)
 	assert.Equal(t, "https://example.com/page", headers.CurrentURL)
 }
+
+// TestHTMXIntegration tests full HTMX integration scenarios.
+func TestHTMXIntegration(t *testing.T) {
+	config := inertia.Config{
+		Version:  "1.0",
+		RootView: "app",
+	}
+	mgr, err := inertia.New(config)
+	require.NoError(t, err)
+
+	t.Run("partial update with HTMX", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/update", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Target", "user-list")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Render partial HTML fragment
+		html := `<div id="user-list"><div class="user">John Doe</div></div>`
+		err := ic.HTMXPartial(html)
+		require.NoError(t, err)
+
+		assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+		assert.Contains(t, w.Body.String(), "John Doe")
+	})
+
+	t.Run("HTMX redirect with flash", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/save", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Save and redirect
+		err := ic.HTMXRedirect("/success")
+		require.NoError(t, err)
+
+		assert.Equal(t, "/success", w.Header().Get("HX-Redirect"))
+	})
+
+	t.Run("trigger client-side event", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/action", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Trigger event with data
+		err := ic.HTMXTriggerWithData(map[string]interface{}{
+			"showNotification": map[string]string{
+				"level":   "success",
+				"message": "Operation completed",
+			},
+		})
+		require.NoError(t, err)
+
+		err = ic.HTMXPartial("<div>Success</div>")
+		require.NoError(t, err)
+
+		trigger := w.Header().Get("HX-Trigger")
+		assert.Contains(t, trigger, "showNotification")
+		assert.Contains(t, trigger, "Operation completed")
+	})
+
+	t.Run("out-of-band swap", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/update", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Update multiple targets
+		html := `
+			<div id="main-content">Main Updated</div>
+			<div id="sidebar" hx-swap-oob="true">Sidebar Updated</div>
+		`
+		err := ic.HTMXPartial(html)
+		require.NoError(t, err)
+
+		assert.Contains(t, w.Body.String(), "Main Updated")
+		assert.Contains(t, w.Body.String(), "hx-swap-oob")
+	})
+
+	t.Run("chained HTMX operations", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/complex", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Chain multiple HTMX operations
+		err := ic.
+			HTMXReswap("outerHTML").
+			HTMXRetarget("#result").
+			HTMXPushURL("/updated").
+			HTMXPartial("<div>Complete</div>")
+		require.NoError(t, err)
+
+		// Trigger must be set separately (returns error)
+		err = ic.HTMXTrigger("updated")
+		require.NoError(t, err)
+
+		assert.Equal(t, "outerHTML", w.Header().Get("HX-Reswap"))
+		assert.Equal(t, "#result", w.Header().Get("HX-Retarget"))
+		assert.Equal(t, "/updated", w.Header().Get("HX-Push-Url"))
+		assert.Equal(t, "updated", w.Header().Get("HX-Trigger"))
+	})
+
+	t.Run("hybrid Inertia and HTMX routing", func(t *testing.T) {
+		// Regular Inertia request
+		inertiaReq := httptest.NewRequest("GET", "/dashboard", http.NoBody)
+		inertiaReq.Header.Set("X-Inertia", "true")
+
+		assert.False(t, inertia.IsHTMXRequest(inertiaReq))
+		assert.True(t, inertiaReq.Header.Get("X-Inertia") == "true")
+
+		// HTMX request
+		htmxReq := httptest.NewRequest("GET", "/partial", http.NoBody)
+		htmxReq.Header.Set("HX-Request", "true")
+
+		assert.True(t, inertia.IsHTMXRequest(htmxReq))
+		assert.False(t, htmxReq.Header.Get("X-Inertia") == "true")
+
+		// Regular browser request
+		browserReq := httptest.NewRequest("GET", "/page", http.NoBody)
+
+		assert.False(t, inertia.IsHTMXRequest(browserReq))
+		assert.False(t, browserReq.Header.Get("X-Inertia") == "true")
+	})
+
+	t.Run("HTMX with validation errors", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/validate", http.NoBody)
+		req.Header.Set("HX-Request", "true")
+
+		w := httptest.NewRecorder()
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Return validation errors as HTML
+		errors := inertia.NewValidationErrors()
+		errors.Add("email", "Email is required")
+		errors.Add("password", "Password too short")
+
+		html := `<div class="errors">
+			<div class="error">Email is required</div>
+			<div class="error">Password too short</div>
+		</div>`
+
+		err := ic.HTMXPartial(html)
+		require.NoError(t, err)
+
+		assert.Contains(t, w.Body.String(), "Email is required")
+		assert.Contains(t, w.Body.String(), "Password too short")
+	})
+}

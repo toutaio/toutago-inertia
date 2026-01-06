@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **HTMX Integration Tests** - Complete test coverage
+  - 7 integration test scenarios
+  - Partial updates, redirects, triggers
+  - Out-of-band swaps, chaining
+  - Hybrid Inertia/HTMX routing
+  - Validation error handling
 - **Validation Helpers** - Convenient error handling
   - `ValidationErrors.Add()` - Add validation error to field
   - `ValidationErrors.Has()` - Check if field has errors
