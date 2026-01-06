@@ -16,29 +16,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Middleware implementation with Inertia protocol support
 - Redirect and navigation helpers (Location, Back, Redirect)
 - Error handling and validation support
-- **Context wrapper for router integration**
-- **ContextInterface for router-agnostic design**
-- **InertiaContext with all Inertia methods**
-- **NPM monorepo structure for client packages**
-- **@toutaio/inertia-vue package (v0.1.0)** ✅ **Build Complete**
+- Context wrapper for router integration
+- ContextInterface for router-agnostic design
+- InertiaContext with all Inertia methods
+- NPM monorepo structure for client packages
+- @toutaio/inertia-vue package (v0.1.0)
   - Vue 3 adapter with full TypeScript support
   - createInertiaApp function for app initialization
-  - **Link component with external link detection** ✨
-  - **useForm composable with dirty tracking** ✨
-  - **usePageProps and usePage composables**
+  - Link component with external link detection
+  - useForm composable with dirty tracking
+  - usePageProps and usePage composables
   - Router with full Inertia.js protocol support
-  - **Server-side rendering (SSR) support** ✨
+  - Server-side rendering (SSR) support
     - createInertiaSSRApp for server-side rendering
     - createSSRPage for HTML page template generation
     - XSS protection with automatic escaping
     - Version tracking in meta tags
-  - Comprehensive test suite (69 tests, 100% passing) ✨
-  - **Production build pipeline** ✨
+  - Comprehensive test suite (69 tests, 100% passing)
+  - Production build pipeline
     - ESM bundle (dist/index.mjs)
     - CommonJS bundle (dist/index.js)
     - TypeScript declarations (dist/index.d.ts)
     - Built with tsup for optimal output
-- **TypeScript type generator (pkg/typegen)** ✨
+- TypeScript type generator (pkg/typegen)
   - Automatic Go struct to TypeScript interface conversion
   - Support for nested structs and inline types
   - Optional field detection (pointers and omitempty)
@@ -48,13 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 85% test coverage with 32 tests passing
   - Example integration showing build process usage
 - GitHub Actions CI workflow (test, lint, build)
+- GitHub workflow for NPM package testing (Node 18, 20, 22)
+- GitHub workflow for integration testing (Go + NPM)
+- GitHub workflow for cross-platform compatibility testing
+- Test coverage reporting via Codecov
 - golangci-lint configuration
-- Comprehensive test suite (86% coverage Go, 101 tests passing total) ✨
+- Comprehensive test suite (87% coverage Go, 101 tests passing total)
 - Go module setup with dependencies
 - Getting started documentation
 - Basic example application
-- **HTTP context wrapper example**
-- **TypeScript type generation example**
+- HTTP context wrapper example
+- TypeScript type generation example
 
 ### Features
 - Inertia request detection (X-Inertia header)
@@ -69,12 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Flash messages support
 - Asset versioning
 - JSON rendering with proper structure
-- **Client-side routing with history API**
-- **Method spoofing for PUT/PATCH/DELETE**
-- **Automatic external link detection** ✨
-- **Form helper with dirty state tracking** ✨
-- **Automatic preventDefault handling** ✨
-- **TypeScript type generation from Go structs** ✨
+- Client-side routing with history API
+- Method spoofing for PUT/PATCH/DELETE
+- Automatic external link detection
+- Form helper with dirty state tracking
+- Automatic preventDefault handling
+- TypeScript type generation from Go structs
   - Preserves JSON tag names and optional markers
   - Handles complex nested structures
   - Integrates with build process via go generate
@@ -97,9 +101,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **NPM @toutaio/inertia-vue package** ✅
 
 ### Test Coverage
-- Go: 86% (77 tests passing)
-- TypeScript (Vue): 100% (69 tests passing) ✨
-- **Total: 146 tests passing** ✨
+- Go: 87% (77 tests passing)
+- TypeScript (Vue): 100% (69 tests passing)
+- Total: 146 tests passing
+
+### Workflows
+- Go tests on Linux, macOS, Windows (Go 1.22, 1.23)
+- NPM tests on Ubuntu (Node 18, 20, 22)
+- Integration tests (Go + NPM)
+- Cross-platform compatibility testing
+- Coverage reports uploaded to Codecov
 
 ### Ready for v0.1.0
 The core Inertia.js adapter is complete and functional. Ready for:
