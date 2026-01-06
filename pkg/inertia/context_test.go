@@ -266,3 +266,65 @@ func TestInertiaContext_RenderOnly(t *testing.T) {
 	assert.NotContains(t, w.Body.String(), "stats")
 	assert.NotContains(t, w.Body.String(), "recent")
 }
+
+func TestInertiaContext_ShareFunc(t *testing.T) {
+	config := inertia.Config{
+		RootView: "app.html",
+		Version:  "1.0.0",
+	}
+
+	mgr, err := inertia.New(config)
+	require.NoError(t, err)
+
+	req := httptest.NewRequest("GET", "/dashboard", http.NoBody)
+	req.Header.Set("X-Inertia", "true")
+	w := httptest.NewRecorder()
+
+	ctx := NewMockContext(w, req)
+	ic := inertia.NewContext(ctx, mgr)
+
+	// Add lazy shared data function
+	called := false
+	ic.ShareFunc("currentUser", func() interface{} {
+		called = true
+		return map[string]interface{}{
+			"name":  "John Doe",
+			"email": "john@example.com",
+		}
+	})
+
+	err = ic.Render("Dashboard", map[string]interface{}{
+		"stats": map[string]int{"visits": 100},
+	})
+	require.NoError(t, err)
+
+	// ShareFunc should have been called
+	assert.True(t, called, "ShareFunc should be called during render")
+	assert.Contains(t, w.Body.String(), "currentUser")
+	assert.Contains(t, w.Body.String(), "John Doe")
+}
+
+func TestInertiaContext_WithInfo(t *testing.T) {
+	config := inertia.Config{
+		RootView: "app.html",
+		Version:  "1.0.0",
+	}
+
+	mgr, err := inertia.New(config)
+	require.NoError(t, err)
+
+	req := httptest.NewRequest("GET", "/settings", http.NoBody)
+	req.Header.Set("X-Inertia", "true")
+	w := httptest.NewRecorder()
+
+	ctx := NewMockContext(w, req)
+	ic := inertia.NewContext(ctx, mgr)
+
+	err = ic.WithInfo("Settings saved successfully").Render("Settings/Index", map[string]interface{}{
+		"settings": map[string]string{"theme": "dark"},
+	})
+	require.NoError(t, err)
+
+	assert.Contains(t, w.Body.String(), "info")
+	assert.Contains(t, w.Body.String(), "Settings saved successfully")
+}

@@ -1,6 +1,7 @@
 package typegen
 
 import (
+	"os"
 	"testing"
 	"time"
 )
@@ -141,4 +142,102 @@ func contains(s, substr string) bool {
 	return len(s) >= len(substr) &&
 		(s == substr || len(s) > len(substr) &&
 			(s[:len(substr)] == substr || contains(s[1:], substr)))
+}
+
+func TestNew(t *testing.T) {
+	gen := New()
+	if gen == nil {
+		t.Fatal("New() returned nil")
+	}
+	if gen.types == nil {
+		t.Error("New() created generator with nil types map")
+	}
+}
+
+func TestRegister(t *testing.T) {
+	gen := New()
+	gen.Register("User", User{})
+	gen.Register("Post", Post{})
+
+	if len(gen.types) != 2 {
+		t.Errorf("Register() added %d types, want 2", len(gen.types))
+	}
+
+	if _, ok := gen.types["User"]; !ok {
+		t.Error("Register() did not add User type")
+	}
+	if _, ok := gen.types["Post"]; !ok {
+		t.Error("Register() did not add Post type")
+	}
+}
+
+func TestGenerateFile(t *testing.T) {
+	gen := New()
+	gen.Register("User", User{})
+	gen.Register("Post", Post{})
+
+	tmpDir := t.TempDir()
+	outputPath := tmpDir + "/types.ts"
+
+	err := gen.GenerateFile(outputPath)
+	if err != nil {
+		t.Fatalf("GenerateFile() error = %v", err)
+	}
+
+	// Verify file exists
+	content, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("Failed to read generated file: %v", err)
+	}
+
+	// Verify content contains both types
+	contentStr := string(content)
+	if !contains(contentStr, "export interface User") {
+		t.Error("Generated file missing User interface")
+	}
+	if !contains(contentStr, "export interface Post") {
+		t.Error("Generated file missing Post interface")
+	}
+}
+
+func TestGenerateFileNestedDirectory(t *testing.T) {
+	gen := New()
+	gen.Register("User", User{})
+
+	tmpDir := t.TempDir()
+	outputPath := tmpDir + "/nested/deep/types.ts"
+
+	err := gen.GenerateFile(outputPath)
+	if err != nil {
+		t.Fatalf("GenerateFile() with nested directory error = %v", err)
+	}
+
+	// Verify file exists
+	if _, err := os.Stat(outputPath); err != nil {
+		t.Errorf("GenerateFile() did not create nested directories: %v", err)
+	}
+}
+
+func TestToSnakeCase(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"UserID", "user_i_d"},
+		{"HTTPResponse", "h_t_t_p_response"},
+		{"SimpleString", "simple_string"},
+		{"ID", "i_d"},
+		{"", ""},
+		{"A", "a"},
+		{"UserName", "user_name"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			got := toSnakeCase(tt.input)
+			if got != tt.want {
+				t.Errorf("toSnakeCase(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
 }

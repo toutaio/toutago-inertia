@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Improved Test Coverage** - Comprehensive testing for uncovered code
+  - `ShareFunc()` - Lazy shared data function tests
+  - `WithInfo()` - Info flash message tests
+  - `HTMXReplaceURL()` - HTMX URL replacement tests
+  - `Always()` / `AlwaysLazy()` - Always-included props tests
+  - TypeGen tests: `New()`, `Register()`, `GenerateFile()`, `toSnakeCase()`
+  - Test coverage: inertia 84.9% → 92.4%, typegen 66.7% → 82.2%
 - **Integration Tests** - Complete request cycle coverage
   - 6 full request/response scenarios
   - Initial page loads and navigation
@@ -16,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - External redirects
   - Shared data flow (global & request-level)
   - Error handling (404, 500)
-  - Test coverage: 71.8% → 73.3%
 - **HTMX Integration Tests** - Complete test coverage
   - 7 integration test scenarios
   - Partial updates, redirects, triggers

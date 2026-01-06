@@ -345,3 +345,79 @@ func TestHTMXIntegration(t *testing.T) {
 		assert.Contains(t, w.Body.String(), "Password too short")
 	})
 }
+
+func TestHTMXReplaceURL(t *testing.T) {
+	config := inertia.Config{
+		RootView: "app.html",
+		Version:  "1.0.0",
+	}
+
+	mgr, err := inertia.New(config)
+	require.NoError(t, err)
+
+	req := httptest.NewRequest("POST", "/profile/update", http.NoBody)
+	req.Header.Set("HX-Request", "true")
+	w := httptest.NewRecorder()
+
+	ctx := NewMockContext(w, req)
+	ic := inertia.NewContext(ctx, mgr)
+
+	err = ic.HTMXReplaceURL("/profile").HTMXPartial("<div>Profile updated</div>")
+	require.NoError(t, err)
+
+	assert.Equal(t, "/profile", w.Header().Get("HX-Replace-Url"))
+	assert.Contains(t, w.Body.String(), "Profile updated")
+}
+
+func TestAlwaysAndAlwaysLazy(t *testing.T) {
+	config := inertia.Config{
+		RootView: "app.html",
+		Version:  "1.0.0",
+	}
+
+	mgr, err := inertia.New(config)
+	require.NoError(t, err)
+
+	t.Run("Always prop can be set", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/dashboard", http.NoBody)
+		req.Header.Set("X-Inertia", "true")
+		w := httptest.NewRecorder()
+
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		// Test that Always can be called and chained
+		result := ic.Always("alwaysProp", "always here")
+		require.NotNil(t, result, "Always should return InertiaContext for chaining")
+
+		err = result.Render("Dashboard", map[string]interface{}{
+			"data": "main data",
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("AlwaysLazy prop can be set", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/dashboard", http.NoBody)
+		req.Header.Set("X-Inertia", "true")
+		w := httptest.NewRecorder()
+
+		ctx := NewMockContext(w, req)
+		ic := inertia.NewContext(ctx, mgr)
+
+		called := false
+		result := ic.AlwaysLazy("authUser", func() interface{} {
+			called = true
+			return map[string]string{"name": "Admin"}
+		})
+		require.NotNil(t, result, "AlwaysLazy should return InertiaContext for chaining")
+
+		err = result.Render("Dashboard", map[string]interface{}{
+			"data": "main data",
+		})
+		require.NoError(t, err)
+
+		assert.True(t, called, "AlwaysLazy should be called")
+		assert.Contains(t, w.Body.String(), "authUser")
+		assert.Contains(t, w.Body.String(), "Admin")
+	})
+}
