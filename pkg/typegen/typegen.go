@@ -52,7 +52,7 @@ func (g *Generator) GenerateFile(path string) error {
 	return nil
 }
 
-// GenerateTypeScriptInterface generates a TypeScript interface from a Go struct
+// GenerateTypeScriptInterface generates a TypeScript interface from a Go struct.
 func GenerateTypeScriptInterface(v interface{}) (string, error) {
 	t := reflect.TypeOf(v)
 	if t.Kind() == reflect.Ptr {
@@ -98,7 +98,7 @@ func GenerateTypeScriptInterface(v interface{}) (string, error) {
 	return sb.String(), nil
 }
 
-// GenerateTypeScriptFile generates a complete TypeScript file with multiple interfaces
+// GenerateTypeScriptFile generates a complete TypeScript file with multiple interfaces.
 func GenerateTypeScriptFile(types map[string]interface{}) (string, error) {
 	var sb strings.Builder
 
@@ -189,7 +189,7 @@ func toSnakeCase(s string) string {
 	return strings.ToLower(result.String())
 }
 
-// Helper function for testing
+// Helper function for testing.
 func mapGoTypeToTypeScript(goType string) string {
 	switch goType {
 	case "string":

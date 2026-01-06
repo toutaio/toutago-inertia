@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Context keys for storing request data
+// Context keys for storing request data.
 type contextKey string
 
 const (
@@ -16,7 +16,7 @@ const (
 	contextKeyExternalRedirect contextKey = "external_redirect"
 )
 
-// Middleware returns an HTTP middleware that handles Inertia requests
+// Middleware returns an HTTP middleware that handles Inertia requests.
 func (i *Inertia) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +72,7 @@ func (i *Inertia) Middleware() func(http.Handler) http.Handler {
 	}
 }
 
-// responseWriter wraps http.ResponseWriter to track if response was written
+// responseWriter wraps http.ResponseWriter to track if response was written.
 type responseWriter struct {
 	http.ResponseWriter
 	request *http.Request
@@ -111,13 +111,13 @@ func GetPartialComponent(r *http.Request) string {
 	return ""
 }
 
-// SetExternalRedirect marks the request for external redirect
+// SetExternalRedirect marks the request for external redirect.
 func SetExternalRedirect(r *http.Request, url string) {
 	ctx := context.WithValue(r.Context(), contextKeyExternalRedirect, url)
 	*r = *r.WithContext(ctx)
 }
 
-// GetExternalRedirect gets the external redirect URL if set
+// GetExternalRedirect gets the external redirect URL if set.
 func GetExternalRedirect(r *http.Request) string {
 	if url, ok := r.Context().Value(contextKeyExternalRedirect).(string); ok {
 		return url

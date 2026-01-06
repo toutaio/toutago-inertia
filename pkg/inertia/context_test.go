@@ -10,7 +10,7 @@ import (
 	"github.com/toutaio/toutago-inertia/pkg/inertia"
 )
 
-// MockContext simulates Cosan context for testing
+// MockContext simulates Cosan context for testing.
 type MockContext struct {
 	req    *http.Request
 	res    http.ResponseWriter

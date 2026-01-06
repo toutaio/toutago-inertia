@@ -97,17 +97,17 @@ func New(config Config) (*Inertia, error) {
 	}, nil
 }
 
-// Share adds a static shared value
+// Share adds a static shared value.
 func (i *Inertia) Share(key string, value interface{}) {
 	i.sharedData[key] = value
 }
 
-// ShareFunc adds a function that provides shared data
+// ShareFunc adds a function that provides shared data.
 func (i *Inertia) ShareFunc(key string, fn SharedDataFunc) {
 	i.sharedFunc[key] = fn
 }
 
-// GetSharedData returns all shared data (static + evaluated functions)
+// GetSharedData returns all shared data (static + evaluated functions).
 func (i *Inertia) GetSharedData() map[string]interface{} {
 	result := make(map[string]interface{})
 
@@ -124,17 +124,17 @@ func (i *Inertia) GetSharedData() map[string]interface{} {
 	return result
 }
 
-// Version returns the current asset version
+// Version returns the current asset version.
 func (i *Inertia) Version() string {
 	return i.version
 }
 
-// SetVersion updates the asset version
+// SetVersion updates the asset version.
 func (i *Inertia) SetVersion(version string) {
 	i.version = version
 }
 
-// Render creates an Inertia response
+// Render creates an Inertia response.
 func (i *Inertia) Render(component string, props map[string]interface{}, url string) (*Page, error) {
 	if component == "" {
 		return nil, fmt.Errorf("inertia: component name is required")
@@ -154,7 +154,7 @@ func (i *Inertia) Render(component string, props map[string]interface{}, url str
 	return page, nil
 }
 
-// RenderOnly creates an Inertia response with only specified props
+// RenderOnly creates an Inertia response with only specified props.
 func (i *Inertia) RenderOnly(component string, props map[string]interface{}, url string, only []string) (*Page, error) {
 	if component == "" {
 		return nil, fmt.Errorf("inertia: component name is required")

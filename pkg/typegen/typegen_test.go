@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Test struct definitions
+// Test struct definitions.
 type User struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
