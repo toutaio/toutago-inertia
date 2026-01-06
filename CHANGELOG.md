@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.9] - 2026-01-06
+
+### Fixed
+- CI workflow: use cross-platform commands for cleaning node_modules on Windows
+
 ## [0.2.8] - 2026-01-06
 
 ### Fixed
