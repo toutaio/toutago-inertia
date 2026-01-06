@@ -50,9 +50,9 @@ jobs:
 
       - name: Type generation integration test
         run: |
-          # Test type generation
+          # Test type generation (using examples/basic as source)
           cd cmd/inertia-typegen
-          go run main.go
+          go run main.go -package ../../examples/basic -output ../../frontend/types/generated.ts
           # Verify generated file exists
           test -f ../../frontend/types/generated.ts
           echo "Type generation successful!"
@@ -90,6 +90,8 @@ jobs:
 
       - name: Install NPM dependencies
         run: |
+          rm -rf node_modules package-lock.json
+          rm -rf packages/*/node_modules packages/*/package-lock.json
           npm install
           cd packages/inertia-vue && npm install
 
