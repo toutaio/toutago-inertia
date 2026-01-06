@@ -23,14 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **@toutaio/inertia-vue package (v0.1.0)**
   - Vue 3 adapter with full TypeScript support
   - createInertiaApp function for app initialization
-  - Link component for Inertia navigation
-  - usePageProps and usePage composables
+  - **Link component with external link detection** ✨
+  - **useForm composable with dirty tracking** ✨
+  - **usePageProps and usePage composables**
   - Router with full Inertia.js protocol support
-  - Comprehensive test suite (34 tests, 100% passing)
+  - Comprehensive test suite (58 tests, 100% passing) ✨
   - Build pipeline with tsup (CJS, ESM, TypeScript declarations)
 - GitHub Actions CI workflow (test, lint, build)
 - golangci-lint configuration
-- Comprehensive test suite (87.4% coverage Go, 34 tests passing TypeScript)
+- Comprehensive test suite (87.4% coverage Go, 58 tests passing TypeScript) ✨
 - Go module setup with dependencies
 - Getting started documentation
 - Basic example application
@@ -51,7 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JSON rendering with proper structure
 - **Client-side routing with history API**
 - **Method spoofing for PUT/PATCH/DELETE**
-- **Automatic external link detection**
+- **Automatic external link detection** ✨
+- **Form helper with dirty state tracking** ✨
+- **Automatic preventDefault handling** ✨
 
 ### Completed Tasks - Phases 1, 2 & 7 (Core Vue Package) Complete ✅
 - Repository setup and structure ✅
@@ -72,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Test Coverage
 - Go: 87.4% (45 tests passing)
-- TypeScript (Vue): 100% (34 tests passing)
+- TypeScript (Vue): 100% (58 tests passing) ✨
 
 ### Ready for v0.1.0
 The core Inertia.js adapter is complete and functional. Ready for:
