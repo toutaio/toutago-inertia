@@ -138,6 +138,10 @@ defineProps({
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) first.
 
+### Releases
+
+Releases are automated via GitHub Actions. See [Release Process](docs/RELEASING.md) for details on creating new releases.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.

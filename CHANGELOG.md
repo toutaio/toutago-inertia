@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-01-06
+
+### Added
+- Automated release workflow via GitHub Actions
+  - Validates release with all tests and linters
+  - Creates GitHub Release with changelog notes
+  - Publishes NPM packages automatically
+- Release process documentation (docs/RELEASING.md)
+  - Complete guide for creating releases
+  - NPM token configuration
+  - Troubleshooting and rollback procedures
+  - Release checklist
+
+### Changed
+- Release process now fully automated via git tags
+- NPM package versions automatically synced with git tags
+
 ## [0.2.9] - 2026-01-06
 
 ### Fixed
