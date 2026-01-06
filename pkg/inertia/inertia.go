@@ -1,6 +1,7 @@
 package inertia
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -70,12 +71,18 @@ func (c Config) Validate() error {
 // SharedDataFunc is a function that returns shared data.
 type SharedDataFunc func() interface{}
 
+// SSRRenderer is an interface for server-side rendering.
+type SSRRenderer interface {
+	RenderToString(ctx context.Context, pageData map[string]interface{}) (string, error)
+}
+
 // Inertia is the main Inertia instance.
 type Inertia struct {
-	config     Config
-	version    string
-	sharedData map[string]interface{}
-	sharedFunc map[string]SharedDataFunc
+	config      Config
+	version     string
+	sharedData  map[string]interface{}
+	sharedFunc  map[string]SharedDataFunc
+	ssrRenderer SSRRenderer
 }
 
 // New creates a new Inertia instance.
@@ -181,4 +188,27 @@ func (i *Inertia) RenderOnly(component string, props map[string]interface{}, url
 	page.MergeSharedData(i.GetSharedData())
 
 	return page, nil
+}
+
+// SetSSRRenderer sets the SSR renderer for server-side rendering.
+func (i *Inertia) SetSSRRenderer(renderer SSRRenderer) {
+	i.ssrRenderer = renderer
+}
+
+// RenderSSR renders a page using server-side rendering.
+// Returns empty string if no SSR renderer is configured.
+// Returns error if SSR rendering fails.
+func (i *Inertia) RenderSSR(ctx context.Context, page *Page) (string, error) {
+	if i.ssrRenderer == nil {
+		return "", nil
+	}
+
+	pageData := map[string]interface{}{
+		"component": page.Component,
+		"props":     page.Props,
+		"url":       page.URL,
+		"version":   page.Version,
+	}
+
+	return i.ssrRenderer.RenderToString(ctx, pageData)
 }

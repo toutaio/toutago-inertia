@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Server-Side Rendering (SSR)** - V8-based SSR support
+  - New `pkg/ssr` package with V8 renderer
+  - Context pooling for performance (configurable pool size)
+  - Timeout protection (configurable timeout)
+  - Error handling with graceful fallback
+  - `SetSSRRenderer()` method to enable SSR
+  - `RenderSSR()` method for server-side page rendering
+  - Support for complex data structures (nested objects, arrays)
+  - SSR documentation and examples
+  - 8 SSR tests (100% coverage)
+  - Dependency: rogchap.com/v8go@v0.9.0
 - **API Documentation** - Complete API reference (API.md)
   - Core API: New(), Render(), Share(), ShareFunc()
   - Context methods: All 15+ context helpers
