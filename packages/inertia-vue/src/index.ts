@@ -3,6 +3,7 @@ export { default as Link } from './components/Link.vue'
 export { default as Head } from './components/Head.vue'
 export { useForm } from './composables/useForm'
 export { usePage } from './composables/usePage'
+export { useRemember } from './composables/useRemember'
 
 export type {
   Page,
