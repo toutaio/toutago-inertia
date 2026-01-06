@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-01-06
+
+### Fixed
+- Removed deprecated linters from golangci-lint configuration
+- CI now fully passes without deprecated linter warnings
+
 ## [0.2.5] - 2026-01-06
 
 ### Fixed

@@ -6,17 +6,12 @@ linters:
     - staticcheck
     - unused
     - gosimple
-    - structcheck
-    - varcheck
     - ineffassign
-    - deadcode
     - typecheck
     - bodyclose
     - noctx
-    - golint
     - stylecheck
     - gosec
-    - interfacer
     - unconvert
     - dupl
     - goconst
@@ -28,11 +23,11 @@ linters:
     - unparam
     - nakedret
     - prealloc
-    - exportloopref
     - gocritic
     - gochecknoinits
     - gochecknoglobals
     - revive
+    - copyloopvar  # Replacement for exportloopref
 
 linters-settings:
   gocyclo:
