@@ -9,6 +9,7 @@ A complete example demonstrating Toutago Inertia integration with Vue 3.
 - Type-safe props with TypeScript
 - Form handling with validation
 - Authentication example
+- Nested layouts demonstration
 - Asset bundling with esbuild
 
 ## Running the Example
@@ -128,6 +129,33 @@ func HandleCreate(ctx *cosan.Context) error {
     return ctx.InertiaRedirect("/todos")
 }
 ```
+
+### 6. Nested Layouts
+
+The app demonstrates nested layouts with the Admin section:
+
+```typescript
+// In views/app.ts
+import { withLayout, resolvePageLayout } from '@toutaio/inertia-vue'
+
+createInertiaApp({
+  resolve: async (name) => {
+    const page = await pages[`./pages/${name}.vue`]()
+    
+    // Check if page has custom layout
+    const pageLayout = resolvePageLayout(page.default)
+    if (pageLayout) {
+      page.default = withLayout(page.default, pageLayout)
+    }
+    
+    // Wrap with app layout
+    page.default = withLayout(page.default, AppLayout)
+    return page
+  }
+})
+```
+
+Visit `/admin/dashboard` to see nested layouts in action (App Layout → Admin Layout → Page).
 
 ## Learn More
 

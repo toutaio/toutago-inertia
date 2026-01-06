@@ -19,6 +19,7 @@
                 <li>✅ Form handling with validation</li>
                 <li>✅ Flash messages</li>
                 <li>✅ Authentication example</li>
+                <li>✅ Nested layouts</li>
               </ul>
             </div>
           </div>
@@ -34,6 +35,9 @@
               </p>
               <Link href="/todos" class="button is-primary">
                 View Todos
+              </Link>
+              <Link href="/admin/dashboard" class="button is-info ml-2">
+                Admin Dashboard
               </Link>
             </div>
           </div>
@@ -66,5 +70,9 @@ li {
 
 .mb-3 {
   margin-bottom: 1rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 </style>

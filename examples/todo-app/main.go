@@ -45,6 +45,9 @@ func main() {
 	router.POST("/login", handlers.HandleLoginSubmit(inertiaAdapter))
 	router.POST("/logout", handlers.HandleLogout(inertiaAdapter))
 
+	// Admin routes (demonstrating nested layouts)
+	router.GET("/admin/dashboard", handlers.AdminDashboard(inertiaAdapter))
+
 	// Initialize sample data
 	models.InitSampleTodos()
 
