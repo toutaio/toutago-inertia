@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Integration Tests** - Complete request cycle coverage
+  - 6 full request/response scenarios
+  - Initial page loads and navigation
+  - Form submissions with validation
+  - Lazy props evaluation
+  - External redirects
+  - Shared data flow (global & request-level)
+  - Error handling (404, 500)
+  - Test coverage: 71.8% → 73.3%
 - **HTMX Integration Tests** - Complete test coverage
   - 7 integration test scenarios
   - Partial updates, redirects, triggers
@@ -57,8 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Best practices and performance tips
 
 ### Changed
-- Test coverage: 70.9% → 71.8% (new helpers added)
-- pkg/inertia coverage: 86.7% → 82.8%
+- Test coverage: 70.9% → 73.3% (comprehensive integration tests)
+- pkg/inertia coverage: 86.7% → 84.9%
 
 ## [0.3.0] - 2026-01-06
 
