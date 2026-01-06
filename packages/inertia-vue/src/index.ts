@@ -4,6 +4,7 @@ export { default as Head } from './components/Head.vue'
 export { useForm } from './composables/useForm'
 export { usePage } from './composables/usePage'
 export { useRemember } from './composables/useRemember'
+export { withLayout, resolvePageLayout } from './utils/layout'
 
 export type {
   Page,
@@ -16,3 +17,5 @@ export type {
   ValidationErrors,
   FlashMessages
 } from './types'
+
+export type { PageWithLayout } from './utils/layout'
