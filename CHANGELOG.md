@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-01-06
+
+### Fixed
+- CI workflow: corrected type generation example path from `typegen-example` to `inertia-typegen`
+- CI workflow: use `npm install` instead of `npm ci` to handle optional dependencies on different platforms
+
 ## [0.2.6] - 2026-01-06
 
 ### Fixed
