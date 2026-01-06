@@ -122,8 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Test Coverage
 - Go: 87% (77 tests passing)
-- TypeScript (Vue): 100% (69 tests passing)
-- Total: 146 tests passing
+- TypeScript (Vue): 100% (44 tests passing)
+- Total: 121 tests passing
 
 ### Workflows
 - Go tests on Linux, macOS, Windows (Go 1.22, 1.23)
