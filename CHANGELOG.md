@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.8] - 2026-01-06
+
+### Fixed
+- CI workflow: added required `-package` flag to type generation test
+- CI workflow: clean node_modules before install on cross-platform tests to fix rollup optional dependencies issue
+
 ## [0.2.7] - 2026-01-06
 
 ### Fixed
