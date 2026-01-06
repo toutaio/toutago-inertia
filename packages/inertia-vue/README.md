@@ -38,6 +38,7 @@ createInertiaApp({
 - 🔗 Smart link handling
 - 💾 Form state persistence
 - 🎯 TypeScript support
+- 🎨 Flexible layout system with nesting support
 
 ## Core Components
 
@@ -106,6 +107,57 @@ import { usePage } from '@toutaio/inertia-vue'
 
 const page = usePage()
 console.log(page.props.user)
+</script>
+```
+
+## Layouts
+
+### Using withLayout
+
+Wrap page components with layouts:
+
+```vue
+<script>
+import { withLayout } from '@toutaio/inertia-vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import Dashboard from '@/Pages/Dashboard.vue'
+
+export default withLayout(Dashboard, AppLayout)
+</script>
+```
+
+### Layout as Component Property
+
+Define layouts directly on page components:
+
+```vue
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue'
+
+defineOptions({
+  layout: AppLayout
+})
+</script>
+
+<template>
+  <div>Dashboard content</div>
+</template>
+```
+
+### Nested Layouts
+
+Stack multiple layouts:
+
+```vue
+<script>
+import { withLayout } from '@toutaio/inertia-vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AdminDashboard from '@/Pages/Admin/Dashboard.vue'
+
+// Apply layouts inside-out
+const withAdmin = withLayout(AdminDashboard, AdminLayout)
+export default withLayout(withAdmin, AppLayout)
 </script>
 ```
 
