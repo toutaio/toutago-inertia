@@ -27,11 +27,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **useForm composable with dirty tracking** ✨
   - **usePageProps and usePage composables**
   - Router with full Inertia.js protocol support
-  - Comprehensive test suite (58 tests, 100% passing) ✨
+  - **Server-side rendering (SSR) support** ✨
+    - createInertiaSSRApp for server-side rendering
+    - createSSRPage for HTML page template generation
+    - XSS protection with automatic escaping
+    - Version tracking in meta tags
+  - Comprehensive test suite (69 tests, 100% passing) ✨
   - Build pipeline with tsup (CJS, ESM, TypeScript declarations)
 - GitHub Actions CI workflow (test, lint, build)
 - golangci-lint configuration
-- Comprehensive test suite (87.4% coverage Go, 58 tests passing TypeScript) ✨
+- Comprehensive test suite (87.4% coverage Go, 69 tests passing TypeScript) ✨
 - Go module setup with dependencies
 - Getting started documentation
 - Basic example application
