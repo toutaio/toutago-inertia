@@ -155,6 +155,51 @@ func (ic *InertiaContext) Back() error {
 	return ic.mgr.Back(ic.ctx.Response(), ic.ctx.Request())
 }
 
+// WithError adds a single validation error for a field.
+func (ic *InertiaContext) WithError(field, message string) *InertiaContext {
+	if ic.pendingErrors == nil {
+		ic.pendingErrors = NewValidationErrors()
+	}
+	ic.pendingErrors.Add(field, message)
+	return ic
+}
+
+// WithSuccess adds a success flash message.
+func (ic *InertiaContext) WithSuccess(message string) *InertiaContext {
+	if ic.pendingFlash == nil {
+		ic.pendingFlash = NewFlash()
+	}
+	ic.pendingFlash.Success(message)
+	return ic
+}
+
+// WithErrorMessage adds an error flash message.
+func (ic *InertiaContext) WithErrorMessage(message string) *InertiaContext {
+	if ic.pendingFlash == nil {
+		ic.pendingFlash = NewFlash()
+	}
+	ic.pendingFlash.Error(message)
+	return ic
+}
+
+// WithWarning adds a warning flash message.
+func (ic *InertiaContext) WithWarning(message string) *InertiaContext {
+	if ic.pendingFlash == nil {
+		ic.pendingFlash = NewFlash()
+	}
+	ic.pendingFlash.Warning(message)
+	return ic
+}
+
+// WithInfo adds an info flash message.
+func (ic *InertiaContext) WithInfo(message string) *InertiaContext {
+	if ic.pendingFlash == nil {
+		ic.pendingFlash = NewFlash()
+	}
+	ic.pendingFlash.Info(message)
+	return ic
+}
+
 // Error renders an error page.
 func (ic *InertiaContext) Error(status int, message string) error {
 	page, err := ic.mgr.Error(status, message, ic.ctx.Request().URL.Path, ic.ctx.Request())

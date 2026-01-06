@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Validation Helpers** - Convenient error handling
+  - `ValidationErrors.Add()` - Add validation error to field
+  - `ValidationErrors.Has()` - Check if field has errors
+  - `ValidationErrors.First()` - Get first error for field
+  - `ValidationErrors.Any()` - Check if any errors exist
+  - `NewValidationErrors()` - Create new validation errors
+  - `WithError()` - Add single validation error (chainable)
+- **Flash Message Helpers** - Easy flash messages
+  - `Flash.Success()` - Add success message
+  - `Flash.Error()` - Add error message
+  - `Flash.Warning()` - Add warning message
+  - `Flash.Info()` - Add info message
+  - `Flash.Custom()` - Add custom message
+  - `NewFlash()` - Create new flash instance
+  - `WithSuccess()` - Add success flash (chainable)
+  - `WithErrorMessage()` - Add error flash (chainable)
+  - `WithWarning()` - Add warning flash (chainable)
+  - `WithInfo()` - Add info flash (chainable)
 - **Lazy Props Support** - Optimize expensive computations
   - `Lazy()` - Props excluded from partial reloads unless requested
   - `AlwaysLazy()` - Lazy props always included even in partials
@@ -33,8 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Best practices and performance tips
 
 ### Changed
-- Test coverage: 70.9% → 70.6% (new features added)
-- pkg/inertia coverage: 86.7% → 82.5%
+- Test coverage: 70.9% → 71.8% (new helpers added)
+- pkg/inertia coverage: 86.7% → 82.8%
 
 ## [0.3.0] - 2026-01-06
 
