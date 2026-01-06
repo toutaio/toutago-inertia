@@ -67,10 +67,10 @@ func (c Config) Validate() error {
 	return nil
 }
 
-// SharedDataFunc is a function that returns shared data
+// SharedDataFunc is a function that returns shared data.
 type SharedDataFunc func() interface{}
 
-// Inertia is the main Inertia instance
+// Inertia is the main Inertia instance.
 type Inertia struct {
 	config     Config
 	version    string
@@ -78,7 +78,7 @@ type Inertia struct {
 	sharedFunc map[string]SharedDataFunc
 }
 
-// New creates a new Inertia instance
+// New creates a new Inertia instance.
 func New(config Config) (*Inertia, error) {
 	if err := config.Validate(); err != nil {
 		return nil, err

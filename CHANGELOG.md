@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-01-06
+
+### Fixed
+- More godot linting issues
+- Removed non-functional eslint script from package.json
+- Updated CI to skip eslint (will be added properly in future version)
+
 ## [0.2.2] - 2026-01-06
 
 ### Fixed
