@@ -1,20 +1,19 @@
-import { DefineComponent, PropType, computed, defineComponent, h } from 'vue';
-import { router } from './router';
-import { Method } from './types';
+import { defineComponent, h, PropType } from 'vue'
+import { router } from './router'
 
 export interface LinkProps {
-  href: string;
-  method?: Method;
-  data?: any;
-  replace?: boolean;
-  preserveScroll?: boolean;
-  preserveState?: boolean;
-  only?: string[];
-  headers?: Record<string, string>;
-  as?: string;
+  href: string
+  method?: 'get' | 'post' | 'put' | 'patch' | 'delete'
+  data?: Record<string, any>
+  preserveScroll?: boolean
+  preserveState?: boolean
+  replace?: boolean
+  only?: string[]
+  headers?: Record<string, string>
+  as?: string
 }
 
-export const Link: DefineComponent<LinkProps> = defineComponent({
+export const Link = defineComponent({
   name: 'InertiaLink',
   props: {
     href: {
@@ -22,16 +21,12 @@ export const Link: DefineComponent<LinkProps> = defineComponent({
       required: true,
     },
     method: {
-      type: String as PropType<Method>,
+      type: String as PropType<'get' | 'post' | 'put' | 'patch' | 'delete'>,
       default: 'get',
     },
     data: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    },
-    replace: {
-      type: Boolean,
-      default: false,
     },
     preserveScroll: {
       type: Boolean,
@@ -41,12 +36,16 @@ export const Link: DefineComponent<LinkProps> = defineComponent({
       type: Boolean,
       default: false,
     },
+    replace: {
+      type: Boolean,
+      default: false,
+    },
     only: {
       type: Array as PropType<string[]>,
       default: () => [],
     },
     headers: {
-      type: Object,
+      type: Object as PropType<Record<string, string>>,
       default: () => ({}),
     },
     as: {
@@ -54,58 +53,75 @@ export const Link: DefineComponent<LinkProps> = defineComponent({
       default: 'a',
     },
   },
-  setup(props: LinkProps, { slots, attrs }) {
-    const isExternal = computed(() => {
-      return /^https?:\/\//.test(props.href);
-    });
+  setup(props, { slots, attrs }) {
+    const isExternal = (href: string) => {
+      try {
+        const url = new URL(href, window.location.origin)
+        return url.origin !== window.location.origin
+      } catch {
+        return false
+      }
+    }
 
     const onClick = (event: MouseEvent) => {
-      if (shouldIntercept(event)) {
-        event.preventDefault();
-
-        router.visit(props.href, {
-          method: props.method,
-          data: props.data,
-          replace: props.replace,
-          preserveScroll: props.preserveScroll,
-          preserveState: props.preserveState,
-          only: props.only && props.only.length > 0 ? props.only : undefined,
-          headers: props.headers,
-        });
-      }
-    };
-
-    const shouldIntercept = (event: MouseEvent): boolean => {
-      if (isExternal.value) {
-        return false;
-      }
-
+      // Don't intercept if default is already prevented
       if (event.defaultPrevented) {
-        return false;
+        return
       }
 
-      if (event.button !== 0) {
-        return false;
+      // Don't intercept external links
+      if (isExternal(props.href)) {
+        return
       }
 
-      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
-        return false;
+      // Allow normal browser behavior for modified clicks
+      if (
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.metaKey ||
+        event.altKey ||
+        event.button !== 0
+      ) {
+        return
       }
 
-      return true;
-    };
+      event.preventDefault()
+
+      router.visit(props.href, {
+        method: props.method,
+        data: props.data,
+        preserveScroll: props.preserveScroll,
+        preserveState: props.preserveState,
+        replace: props.replace,
+        only: props.only.length > 0 ? props.only : undefined,
+        headers: props.headers,
+      })
+    }
 
     return () => {
-      const tag = props.as || 'a';
-      const elementAttrs: Record<string, any> = { ...attrs };
+      const tag = props.as
+      const children = slots.default?.()
 
       if (tag === 'a') {
-        elementAttrs.href = props.href;
+        return h(
+          'a',
+          {
+            ...attrs,
+            href: props.href,
+            onClick,
+          },
+          children
+        )
       }
 
-      elementAttrs.onClick = onClick;
-
-      return h(tag, elementAttrs, slots.default?.());
-    };
+      return h(
+        tag,
+        {
+          ...attrs,
+          onClick,
+        },
+        children
+      )
+    }
   },
-});
+})
