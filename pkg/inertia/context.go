@@ -67,6 +67,29 @@ func (ic *InertiaContext) Render(component string, props map[string]interface{})
 	// Get partial reload info
 	only := GetPartialOnly(req)
 
+	// Add "always" props to the only list for partial reloads
+	// (must be done before evaluateLazyProps so always-lazy props are evaluated)
+	if len(only) > 0 {
+		alwaysPropsInterface := ic.ctx.Get("_inertia_always_props")
+		if alwaysPropsInterface != nil {
+			alwaysProps := alwaysPropsInterface.(map[string]interface{})
+			for key := range alwaysProps {
+				only = append(only, key)
+			}
+		}
+
+		// Add "always lazy" props to the only list
+		lazyPropsInterface := ic.ctx.Get("_inertia_lazy_props")
+		if lazyPropsInterface != nil {
+			lazyProps := lazyPropsInterface.(map[string]LazyProp)
+			for key, lazyProp := range lazyProps {
+				if lazyProp.Group == "always" {
+					only = append(only, key)
+				}
+			}
+		}
+	}
+
 	// Merge context-specific shared data into props first
 	// (before filtering for partial reloads)
 	for key, value := range ic.sharedData {
@@ -81,6 +104,9 @@ func (ic *InertiaContext) Render(component string, props map[string]interface{})
 			props[key] = fn()
 		}
 	}
+
+	// Evaluate lazy props based on request type (with updated only list)
+	ic.evaluateLazyProps(props, only)
 
 	var page *Page
 	var err error

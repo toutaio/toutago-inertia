@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Lazy Props Support** - Optimize expensive computations
+  - `Lazy()` - Props excluded from partial reloads unless requested
+  - `AlwaysLazy()` - Lazy props always included even in partials
+  - `Defer()` - Props only loaded when explicitly requested
+  - Smart evaluation based on request type
+  - Reduces database queries and improves performance
 - **HTMX Support** - Full integration with HTMX library
   - `IsHTMXRequest()` - Detect HTMX requests via HX-Request header
   - `GetHTMXHeaders()` - Extract all HTMX request headers
@@ -21,10 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `HTMXReplaceURL()` - Replace URL in browser history
   - `HTMXRefresh()` - Trigger page refresh
   - Complete test coverage for all HTMX features
+- **Documentation** - Comprehensive guides
+  - HTMX integration guide with examples
+  - Lazy props usage patterns
+  - Best practices and performance tips
 
 ### Changed
-- Test coverage improved from 68.6% to 70.9%
-- pkg/inertia coverage: 86.2% → 86.7%
+- Test coverage: 70.9% → 70.6% (new features added)
+- pkg/inertia coverage: 86.7% → 82.5%
 
 ## [0.3.0] - 2026-01-06
 
