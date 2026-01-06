@@ -39,13 +39,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - useForm composable with dirty tracking
   - usePageProps and usePage composables
   - useRemember composable for state persistence across visits
+  - withLayout utility for wrapping pages with layouts
+  - resolvePageLayout for flexible layout resolution
+  - Support for nested layouts and layout as function
   - Router with full Inertia.js protocol support
   - Server-side rendering (SSR) support
     - createInertiaSSRApp for server-side rendering
     - createSSRPage for HTML page template generation
     - XSS protection with automatic escaping
     - Version tracking in meta tags
-  - Comprehensive test suite (56 tests, 100% passing)
+  - Comprehensive test suite (61 tests, 100% passing)
   - Production build pipeline
     - ESM bundle (dist/index.mjs)
     - CommonJS bundle (dist/index.js)
