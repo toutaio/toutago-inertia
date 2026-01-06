@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Scéla Integration** - Message bus integration for real-time updates
+  - New `ScelaAdapter` bridges Scéla bus to WebSocket hub
+  - Pattern matching support (`user.*`, `*.created`)
+  - Message filtering with custom filter functions
+  - Automatic message forwarding from Scéla to WebSocket clients
+  - Graceful shutdown and error handling
+  - 6 integration tests (48.6% realtime package coverage)
+  - Dependency: github.com/toutaio/toutago-scela-bus@v1.5.5
+  - Scéla integration example with filtering and patterns
 - **Real-time WebSocket Updates** - Full WebSocket support for live updates
   - New `pkg/realtime` package with WebSocket hub
   - Channel-based message broadcasting
@@ -16,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `Hub.Broadcast()` and `Hub.Publish()` for sending messages
   - `HandleWebSocket()` for HTTP upgrade handling
   - Auto-reconnection with configurable retry logic
-  - 12 realtime package tests (35.2% coverage)
   - Dependency: github.com/gorilla/websocket@v1.5.3
 - **useLiveUpdate Composable** - Vue 3 composable for real-time updates
   - `useLiveUpdate(url, options)` with connection management
