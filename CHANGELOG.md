@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **E2E Testing Suite** - Comprehensive Playwright end-to-end tests
+  - Todo app E2E tests with full CRUD operations
+  - Chat app E2E tests with multi-tab real-time updates
+  - Navigation flow tests for SPA routing without page reloads
+  - SSR hydration tests with performance benchmarks
+  - Form submission and validation tests
+  - Browser history and state preservation tests
+  - Connection resilience and reconnection tests
+  - 40+ E2E test scenarios across 4 test files
+  - Playwright configuration with Chromium and Firefox
+  - E2E test server script for automated testing
+  - Dependencies: @playwright/test@^1.57.0, playwright@^1.57.0
 - **Scéla Integration** - Message bus integration for real-time updates
   - New `ScelaAdapter` bridges Scéla bus to WebSocket hub
   - Pattern matching support (`user.*`, `*.created`)

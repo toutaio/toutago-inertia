@@ -8,7 +8,7 @@ import (
 	"github.com/toutaio/toutago-scela-bus/pkg/scela"
 )
 
-// ScelaAdapter bridges Scéla message bus to WebSocket hub
+// ScelaAdapter bridges Scéla message bus to WebSocket hub.
 type ScelaAdapter struct {
 	bus          scela.Bus
 	hub          *Hub
