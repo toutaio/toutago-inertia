@@ -10,6 +10,8 @@ import (
 	"github.com/toutaio/toutago-inertia/pkg/inertia"
 )
 
+const htmxTrueValue = "true"
+
 // TestIsHTMXRequest tests HTMX request detection.
 func TestIsHTMXRequest(t *testing.T) {
 	tests := []struct {
@@ -24,12 +26,12 @@ func TestIsHTMXRequest(t *testing.T) {
 		},
 		{
 			name:     "HTMX request",
-			headers:  map[string]string{"HX-Request": "true"},
+			headers:  map[string]string{"HX-Request": htmxTrueValue},
 			expected: true,
 		},
 		{
 			name:     "HTMX request with other headers",
-			headers:  map[string]string{"HX-Request": "true", "HX-Target": "main"},
+			headers:  map[string]string{"HX-Request": htmxTrueValue, "HX-Target": "main"},
 			expected: true,
 		},
 	}
@@ -59,7 +61,7 @@ func TestHTMXContext(t *testing.T) {
 
 	t.Run("HTMX redirect", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -73,7 +75,7 @@ func TestHTMXContext(t *testing.T) {
 
 	t.Run("HTMX trigger event", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -87,7 +89,7 @@ func TestHTMXContext(t *testing.T) {
 
 	t.Run("HTMX trigger with data", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -106,7 +108,7 @@ func TestHTMXContext(t *testing.T) {
 
 	t.Run("HTMX partial render", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 		req.Header.Set("HX-Target", "content")
 
 		w := httptest.NewRecorder()
@@ -163,14 +165,14 @@ func TestHTMXContext(t *testing.T) {
 		err := ic.HTMXRefresh()
 		require.NoError(t, err)
 
-		assert.Equal(t, "true", w.Header().Get("HX-Refresh"))
+		assert.Equal(t, htmxTrueValue, w.Header().Get("HX-Refresh"))
 	})
 }
 
 // TestGetHTMXHeaders tests extracting HTMX headers from request.
 func TestGetHTMXHeaders(t *testing.T) {
 	req := httptest.NewRequest("GET", "/", http.NoBody)
-	req.Header.Set("HX-Request", "true")
+	req.Header.Set("HX-Request", htmxTrueValue)
 	req.Header.Set("HX-Target", "main-content")
 	req.Header.Set("HX-Trigger", "btn-click")
 	req.Header.Set("HX-Trigger-Name", "submitBtn")
@@ -196,7 +198,7 @@ func TestHTMXIntegration(t *testing.T) {
 
 	t.Run("partial update with HTMX", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/update", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 		req.Header.Set("HX-Target", "user-list")
 
 		w := httptest.NewRecorder()
@@ -214,7 +216,7 @@ func TestHTMXIntegration(t *testing.T) {
 
 	t.Run("HTMX redirect with flash", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/save", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -229,7 +231,7 @@ func TestHTMXIntegration(t *testing.T) {
 
 	t.Run("trigger client-side event", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/action", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -254,7 +256,7 @@ func TestHTMXIntegration(t *testing.T) {
 
 	t.Run("out-of-band swap", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/update", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -274,7 +276,7 @@ func TestHTMXIntegration(t *testing.T) {
 
 	t.Run("chained HTMX operations", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/complex", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -301,28 +303,28 @@ func TestHTMXIntegration(t *testing.T) {
 	t.Run("hybrid Inertia and HTMX routing", func(t *testing.T) {
 		// Regular Inertia request
 		inertiaReq := httptest.NewRequest("GET", "/dashboard", http.NoBody)
-		inertiaReq.Header.Set("X-Inertia", "true")
+		inertiaReq.Header.Set("X-Inertia", htmxTrueValue)
 
 		assert.False(t, inertia.IsHTMXRequest(inertiaReq))
-		assert.True(t, inertiaReq.Header.Get("X-Inertia") == "true")
+		assert.True(t, inertiaReq.Header.Get("X-Inertia") == htmxTrueValue)
 
 		// HTMX request
 		htmxReq := httptest.NewRequest("GET", "/partial", http.NoBody)
-		htmxReq.Header.Set("HX-Request", "true")
+		htmxReq.Header.Set("HX-Request", htmxTrueValue)
 
 		assert.True(t, inertia.IsHTMXRequest(htmxReq))
-		assert.False(t, htmxReq.Header.Get("X-Inertia") == "true")
+		assert.False(t, htmxReq.Header.Get("X-Inertia") == htmxTrueValue)
 
 		// Regular browser request
 		browserReq := httptest.NewRequest("GET", "/page", http.NoBody)
 
 		assert.False(t, inertia.IsHTMXRequest(browserReq))
-		assert.False(t, browserReq.Header.Get("X-Inertia") == "true")
+		assert.False(t, browserReq.Header.Get("X-Inertia") == htmxTrueValue)
 	})
 
 	t.Run("HTMX with validation errors", func(t *testing.T) {
 		req := httptest.NewRequest("POST", "/validate", http.NoBody)
-		req.Header.Set("HX-Request", "true")
+		req.Header.Set("HX-Request", htmxTrueValue)
 
 		w := httptest.NewRecorder()
 		ctx := NewMockContext(w, req)
@@ -356,7 +358,7 @@ func TestHTMXReplaceURL(t *testing.T) {
 	require.NoError(t, err)
 
 	req := httptest.NewRequest("POST", "/profile/update", http.NoBody)
-	req.Header.Set("HX-Request", "true")
+	req.Header.Set("HX-Request", htmxTrueValue)
 	w := httptest.NewRecorder()
 
 	ctx := NewMockContext(w, req)
@@ -380,7 +382,7 @@ func TestAlwaysAndAlwaysLazy(t *testing.T) {
 
 	t.Run("Always prop can be set", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/dashboard", http.NoBody)
-		req.Header.Set("X-Inertia", "true")
+		req.Header.Set("X-Inertia", htmxTrueValue)
 		w := httptest.NewRecorder()
 
 		ctx := NewMockContext(w, req)
@@ -398,7 +400,7 @@ func TestAlwaysAndAlwaysLazy(t *testing.T) {
 
 	t.Run("AlwaysLazy prop can be set", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/dashboard", http.NoBody)
-		req.Header.Set("X-Inertia", "true")
+		req.Header.Set("X-Inertia", htmxTrueValue)
 		w := httptest.NewRecorder()
 
 		ctx := NewMockContext(w, req)

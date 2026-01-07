@@ -64,80 +64,103 @@ func (ic *InertiaContext) Render(component string, props map[string]interface{})
 	req := ic.ctx.Request()
 	res := ic.ctx.Response()
 
-	// Get partial reload info
 	only := GetPartialOnly(req)
+	only = ic.appendAlwaysProps(only)
 
-	// Add "always" props to the only list for partial reloads
-	// (must be done before evaluateLazyProps so always-lazy props are evaluated)
-	if len(only) > 0 {
-		alwaysPropsInterface := ic.ctx.Get("_inertia_always_props")
-		if alwaysPropsInterface != nil {
-			alwaysProps := alwaysPropsInterface.(map[string]interface{})
-			for key := range alwaysProps {
-				only = append(only, key)
-			}
-		}
+	ic.mergeSharedData(props)
+	ic.evaluateLazyProps(props, only)
 
-		// Add "always lazy" props to the only list
-		lazyPropsInterface := ic.ctx.Get("_inertia_lazy_props")
-		if lazyPropsInterface != nil {
-			lazyProps := lazyPropsInterface.(map[string]LazyProp)
-			for key, lazyProp := range lazyProps {
-				if lazyProp.Group == "always" {
-					only = append(only, key)
-				}
-			}
-		}
+	page, err := ic.renderPage(component, props, req.URL.Path, only)
+	if err != nil {
+		return err
 	}
 
-	// Merge context-specific shared data into props first
-	// (before filtering for partial reloads)
+	ic.attachPendingData(page)
+
+	res.Header().Set("Content-Type", "application/json")
+	return json.NewEncoder(res).Encode(page)
+}
+
+// appendAlwaysProps adds "always" props to the only list for partial reloads.
+func (ic *InertiaContext) appendAlwaysProps(only []string) []string {
+	if len(only) == 0 {
+		return only
+	}
+
+	only = ic.appendAlwaysRegularProps(only)
+	only = ic.appendAlwaysLazyProps(only)
+	return only
+}
+
+// appendAlwaysRegularProps appends always-included regular props to the only list.
+func (ic *InertiaContext) appendAlwaysRegularProps(only []string) []string {
+	alwaysPropsInterface := ic.ctx.Get("_inertia_always_props")
+	if alwaysPropsInterface == nil {
+		return only
+	}
+
+	alwaysProps := alwaysPropsInterface.(map[string]interface{})
+	for key := range alwaysProps {
+		only = append(only, key)
+	}
+	return only
+}
+
+// appendAlwaysLazyProps appends always-included lazy props to the only list.
+func (ic *InertiaContext) appendAlwaysLazyProps(only []string) []string {
+	lazyPropsInterface := ic.ctx.Get("_inertia_lazy_props")
+	if lazyPropsInterface == nil {
+		return only
+	}
+
+	lazyProps := lazyPropsInterface.(map[string]LazyProp)
+	for key, lazyProp := range lazyProps {
+		if lazyProp.Group == "always" {
+			only = append(only, key)
+		}
+	}
+	return only
+}
+
+// mergeSharedData merges context-specific shared data and lazy functions into props.
+func (ic *InertiaContext) mergeSharedData(props map[string]interface{}) {
 	for key, value := range ic.sharedData {
 		if _, exists := props[key]; !exists {
 			props[key] = value
 		}
 	}
 
-	// Add context-specific lazy shared data
 	for key, fn := range ic.sharedFuncs {
 		if _, exists := props[key]; !exists {
 			props[key] = fn()
 		}
 	}
+}
 
-	// Evaluate lazy props based on request type (with updated only list)
-	ic.evaluateLazyProps(props, only)
-
-	var page *Page
-	var err error
-
+// renderPage renders the page based on whether it's a partial or full reload.
+func (ic *InertiaContext) renderPage(
+	component string,
+	props map[string]interface{},
+	path string,
+	only []string,
+) (*Page, error) {
 	if len(only) > 0 {
-		// Partial reload
-		page, err = ic.mgr.RenderOnly(component, props, req.URL.Path, only)
-	} else {
-		// Full page load
-		page, err = ic.mgr.Render(component, props, req.URL.Path)
+		return ic.mgr.RenderOnly(component, props, path, only)
 	}
+	return ic.mgr.Render(component, props, path)
+}
 
-	if err != nil {
-		return err
-	}
-
-	// Add pending errors
+// attachPendingData attaches pending errors and flash messages to the page.
+func (ic *InertiaContext) attachPendingData(page *Page) {
 	if ic.pendingErrors != nil {
 		page.WithErrors(ic.pendingErrors)
 		ic.pendingErrors = nil
 	}
 
-	// Add pending flash messages
 	if ic.pendingFlash != nil {
 		page.WithFlash(ic.pendingFlash)
 		ic.pendingFlash = nil
 	}
-
-	// Send JSON response
-	res.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(res).Encode(page)
 }
 
 // Redirect performs an internal redirect.

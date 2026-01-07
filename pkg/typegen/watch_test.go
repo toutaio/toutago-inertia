@@ -3,6 +3,7 @@ package typegen
 import (
 	"os"
 	"path/filepath"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -39,9 +40,9 @@ type User struct {
 	watcher.SetOutput(outFile)
 
 	// Set generator function
-	generated := 0
+	var generated atomic.Int32
 	watcher.SetGenerator(func() error {
-		generated++
+		generated.Add(1)
 		content := "export interface User { name: string; }"
 		return os.WriteFile(outFile, []byte(content), 0600)
 	})
@@ -56,8 +57,8 @@ type User struct {
 	time.Sleep(100 * time.Millisecond)
 
 	// Initial generation should happen
-	if generated != 1 {
-		t.Errorf("Expected 1 initial generation, got %d", generated)
+	if generated.Load() != 1 {
+		t.Errorf("Expected 1 initial generation, got %d", generated.Load())
 	}
 
 	// Modify the file
@@ -73,15 +74,15 @@ type User struct {
 	// Wait for regeneration (with timeout)
 	deadline := time.Now().Add(2 * time.Second)
 	for time.Now().Before(deadline) {
-		if generated >= 2 {
+		if generated.Load() >= 2 {
 			break
 		}
 		time.Sleep(50 * time.Millisecond)
 	}
 
 	// Should have regenerated
-	if generated < 2 {
-		t.Errorf("Expected at least 2 generations after file change, got %d", generated)
+	if generated.Load() < 2 {
+		t.Errorf("Expected at least 2 generations after file change, got %d", generated.Load())
 	}
 
 	// Stop watcher
@@ -117,9 +118,9 @@ func TestWatcher_Debounce(t *testing.T) {
 	}
 
 	// Track generations
-	generated := 0
+	var generated atomic.Int32
 	watcher.SetGenerator(func() error {
-		generated++
+		generated.Add(1)
 		return nil
 	})
 
@@ -129,10 +130,10 @@ func TestWatcher_Debounce(t *testing.T) {
 
 	// Give watcher time to start
 	time.Sleep(100 * time.Millisecond)
-	initialGen := generated
+	initialGen := generated.Load()
 
 	// Make multiple rapid changes
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		content := "package test\n// Change " + string(rune(i))
 		if err := os.WriteFile(goFile, []byte(content), 0600); err != nil {
 			t.Fatalf("Failed to update file: %v", err)
@@ -144,7 +145,7 @@ func TestWatcher_Debounce(t *testing.T) {
 	time.Sleep(400 * time.Millisecond)
 
 	// Should have debounced (not 5 regenerations)
-	totalGen := generated - initialGen
+	totalGen := generated.Load() - initialGen
 	if totalGen >= 5 {
 		t.Errorf("Debouncing failed: expected < 5 generations, got %d", totalGen)
 	}
@@ -178,9 +179,9 @@ func TestWatcher_MultipleFiles(t *testing.T) {
 		t.Fatalf("AddFile failed for file2: %v", err)
 	}
 
-	generated := 0
+	var generated atomic.Int32
 	watcher.SetGenerator(func() error {
-		generated++
+		generated.Add(1)
 		return nil
 	})
 
@@ -188,7 +189,7 @@ func TestWatcher_MultipleFiles(t *testing.T) {
 	defer watcher.Stop()
 
 	time.Sleep(200 * time.Millisecond)
-	initialGen := generated
+	initialGen := generated.Load()
 
 	// Modify file1
 	if err := os.WriteFile(file1, []byte("package test\n// Modified"), 0600); err != nil {
@@ -197,11 +198,11 @@ func TestWatcher_MultipleFiles(t *testing.T) {
 
 	time.Sleep(500 * time.Millisecond)
 
-	if generated <= initialGen {
+	if generated.Load() <= initialGen {
 		t.Error("Expected regeneration after file1 change")
 	}
 
-	file1Gen := generated
+	file1Gen := generated.Load()
 
 	// Modify file2
 	if err := os.WriteFile(file2, []byte("package test\n// Modified"), 0600); err != nil {
@@ -210,7 +211,7 @@ func TestWatcher_MultipleFiles(t *testing.T) {
 
 	time.Sleep(500 * time.Millisecond)
 
-	if generated <= file1Gen {
+	if generated.Load() <= file1Gen {
 		t.Error("Expected regeneration after file2 change")
 	}
 }
@@ -230,16 +231,16 @@ func TestWatcher_ErrorHandling(t *testing.T) {
 	}
 
 	// Set generator that returns error
-	errorCount := 0
+	var errorCount atomic.Int32
 	watcher.SetGenerator(func() error {
-		errorCount++
+		errorCount.Add(1)
 		return os.ErrPermission
 	})
 
 	// Set error handler
-	var lastError error
+	var lastError atomic.Value
 	watcher.SetErrorHandler(func(err error) {
-		lastError = err
+		lastError.Store(err)
 	})
 
 	go watcher.Watch()
@@ -248,12 +249,12 @@ func TestWatcher_ErrorHandling(t *testing.T) {
 	time.Sleep(300 * time.Millisecond)
 
 	// Should have attempted generation
-	if errorCount == 0 {
+	if errorCount.Load() == 0 {
 		t.Error("Generator was not called")
 	}
 
 	// Error handler should have been called
-	if lastError == nil {
+	if lastError.Load() == nil {
 		t.Error("Error handler was not called")
 	}
 
@@ -265,7 +266,7 @@ func TestWatcher_ErrorHandling(t *testing.T) {
 	time.Sleep(500 * time.Millisecond)
 
 	// Watcher should continue after errors
-	if errorCount < 2 {
+	if errorCount.Load() < 2 {
 		t.Error("Watcher did not continue after error")
 	}
 }
@@ -296,9 +297,9 @@ func TestWatcher_AddDirectory(t *testing.T) {
 		t.Fatalf("AddDirectory failed: %v", err)
 	}
 
-	generated := 0
+	var generated atomic.Int32
 	watcher.SetGenerator(func() error {
-		generated++
+		generated.Add(1)
 		return nil
 	})
 
@@ -306,7 +307,7 @@ func TestWatcher_AddDirectory(t *testing.T) {
 	defer watcher.Stop()
 
 	time.Sleep(300 * time.Millisecond)
-	initialGen := generated
+	initialGen := generated.Load()
 
 	// Modify Go file
 	if err := os.WriteFile(file1, []byte("package test\n// Modified"), 0600); err != nil {
@@ -315,11 +316,11 @@ func TestWatcher_AddDirectory(t *testing.T) {
 
 	time.Sleep(500 * time.Millisecond)
 
-	if generated <= initialGen {
+	if generated.Load() <= initialGen {
 		t.Error("Expected regeneration after Go file change")
 	}
 
-	goFileGen := generated
+	goFileGen := generated.Load()
 
 	// Modify non-Go file (should not trigger regeneration)
 	if err := os.WriteFile(file3, []byte("# UPDATED"), 0600); err != nil {
@@ -328,7 +329,7 @@ func TestWatcher_AddDirectory(t *testing.T) {
 
 	time.Sleep(500 * time.Millisecond)
 
-	if generated != goFileGen {
+	if generated.Load() != goFileGen {
 		t.Error("Non-Go file change triggered regeneration")
 	}
 }
@@ -346,9 +347,9 @@ func TestWatcher_Stop(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	generated := 0
+	var generated atomic.Int32
 	watcher.SetGenerator(func() error {
-		generated++
+		generated.Add(1)
 		return nil
 	})
 
@@ -358,7 +359,7 @@ func TestWatcher_Stop(t *testing.T) {
 	}()
 
 	time.Sleep(100 * time.Millisecond)
-	beforeStop := generated
+	beforeStop := generated.Load()
 
 	// Stop watcher
 	watcher.Stop()
@@ -379,7 +380,7 @@ func TestWatcher_Stop(t *testing.T) {
 	time.Sleep(300 * time.Millisecond)
 
 	// Should not regenerate after stop
-	if generated != beforeStop {
+	if generated.Load() != beforeStop {
 		t.Error("Watcher regenerated after Stop()")
 	}
 }

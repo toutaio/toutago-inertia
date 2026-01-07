@@ -59,65 +59,97 @@ func (ic *InertiaContext) Defer(key string, fn func() interface{}) *InertiaConte
 
 // evaluateLazyProps evaluates lazy props based on the request type.
 func (ic *InertiaContext) evaluateLazyProps(props map[string]interface{}, only []string) {
-	// Get lazy props from context
-	lazyPropsInterface := ic.ctx.Get("_inertia_lazy_props")
-	if lazyPropsInterface == nil {
+	ic.mergeAlwaysProps(props)
+
+	lazyProps := ic.getLazyPropsFromContext()
+	if lazyProps == nil {
 		return
 	}
-	lazyProps := lazyPropsInterface.(map[string]LazyProp)
 
-	// Get always props from context
-	alwaysPropsInterface := ic.ctx.Get("_inertia_always_props")
-	if alwaysPropsInterface != nil {
-		alwaysProps := alwaysPropsInterface.(map[string]interface{})
-		for key, value := range alwaysProps {
-			if _, exists := props[key]; !exists {
-				props[key] = value
-			}
+	isPartial := len(only) > 0
+	for key, lazyProp := range lazyProps {
+		if ic.shouldEvaluateLazyProp(key, lazyProp, isPartial, only) {
+			ic.evaluatePropIfNotExists(props, key, lazyProp)
 		}
 	}
+}
 
-	// Determine if this is a partial reload
-	isPartial := len(only) > 0
+// getLazyPropsFromContext retrieves lazy props from the context.
+func (ic *InertiaContext) getLazyPropsFromContext() map[string]LazyProp {
+	lazyPropsInterface := ic.ctx.Get("_inertia_lazy_props")
+	if lazyPropsInterface == nil {
+		return nil
+	}
+	return lazyPropsInterface.(map[string]LazyProp)
+}
 
-	for key, lazyProp := range lazyProps {
-		shouldEvaluate := false
+// mergeAlwaysProps merges always props into the props map.
+func (ic *InertiaContext) mergeAlwaysProps(props map[string]interface{}) {
+	alwaysPropsInterface := ic.ctx.Get("_inertia_always_props")
+	if alwaysPropsInterface == nil {
+		return
+	}
 
-		switch lazyProp.Group {
-		case "always":
-			// Always evaluate, regardless of partial reload
-			shouldEvaluate = true
-
-		case "lazy":
-			if !isPartial {
-				// Evaluate on full page load
-				shouldEvaluate = true
-			} else {
-				// Only evaluate if explicitly requested in partial reload
-				for _, requestedKey := range only {
-					if requestedKey == key {
-						shouldEvaluate = true
-						break
-					}
-				}
-			}
-
-		case "defer":
-			// Only evaluate if explicitly requested (never on full load)
-			if isPartial {
-				for _, requestedKey := range only {
-					if requestedKey == key {
-						shouldEvaluate = true
-						break
-					}
-				}
-			}
+	alwaysProps := alwaysPropsInterface.(map[string]interface{})
+	for key, value := range alwaysProps {
+		if _, exists := props[key]; !exists {
+			props[key] = value
 		}
+	}
+}
 
-		if shouldEvaluate {
-			if _, exists := props[key]; !exists {
-				props[key] = lazyProp.Evaluator()
-			}
+// shouldEvaluateLazyProp determines if a lazy prop should be evaluated.
+func (ic *InertiaContext) shouldEvaluateLazyProp(
+	key string,
+	lazyProp LazyProp,
+	isPartial bool,
+	only []string,
+) bool {
+	switch lazyProp.Group {
+	case "always":
+		return true
+	case "lazy":
+		return ic.shouldEvaluateLazyGroup(key, isPartial, only)
+	case "defer":
+		return ic.shouldEvaluateDeferGroup(key, isPartial, only)
+	default:
+		return false
+	}
+}
+
+// shouldEvaluateLazyGroup determines if a "lazy" group prop should be evaluated.
+func (ic *InertiaContext) shouldEvaluateLazyGroup(key string, isPartial bool, only []string) bool {
+	if !isPartial {
+		return true
+	}
+	return ic.isKeyRequested(key, only)
+}
+
+// shouldEvaluateDeferGroup determines if a "defer" group prop should be evaluated.
+func (ic *InertiaContext) shouldEvaluateDeferGroup(key string, isPartial bool, only []string) bool {
+	if !isPartial {
+		return false
+	}
+	return ic.isKeyRequested(key, only)
+}
+
+// isKeyRequested checks if a key is in the requested keys list.
+func (ic *InertiaContext) isKeyRequested(key string, only []string) bool {
+	for _, requestedKey := range only {
+		if requestedKey == key {
+			return true
 		}
+	}
+	return false
+}
+
+// evaluatePropIfNotExists evaluates a lazy prop if it doesn't already exist.
+func (ic *InertiaContext) evaluatePropIfNotExists(
+	props map[string]interface{},
+	key string,
+	lazyProp LazyProp,
+) {
+	if _, exists := props[key]; !exists {
+		props[key] = lazyProp.Evaluator()
 	}
 }

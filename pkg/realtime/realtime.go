@@ -4,6 +4,7 @@ package realtime
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"sync"
@@ -23,10 +24,15 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
+	//nolint:unused // reserved for future use
 	maxMessageSize = 512 * 1024 // 512 KB
 )
 
-var upgrader = websocket.Upgrader{
+// defaultUpgrader is the default WebSocket upgrader configuration.
+// This is a package-level variable but is treated as immutable.
+//
+//nolint:gochecknoglobals // WebSocket upgrader is effectively a constant configuration.
+var defaultUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(_ *http.Request) bool {
@@ -119,57 +125,87 @@ func (c *Client) readPump() {
 // writePump pumps messages from the hub to the WebSocket connection.
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
-	defer func() {
-		ticker.Stop()
-		if c.conn != nil {
-			c.conn.Close()
-		}
-	}()
+	defer c.cleanupConnection(ticker)
 
 	for {
 		select {
 		case message, ok := <-c.send:
-			if c.conn != nil {
-				_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			}
-			if !ok {
-				// Hub closed the channel
-				if c.conn != nil {
-					_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				}
+			if !c.handleOutgoingMessage(message, ok) {
 				return
 			}
-
-			if c.conn == nil {
-				return
-			}
-
-			w, err := c.conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
-			_, _ = w.Write(message)
-
-			// Add queued messages to the current websocket message
-			n := len(c.send)
-			for i := 0; i < n; i++ {
-				_, _ = w.Write([]byte{'\n'})
-				_, _ = w.Write(<-c.send)
-			}
-
-			if err := w.Close(); err != nil {
-				return
-			}
-
 		case <-ticker.C:
-			if c.conn != nil {
-				_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-				if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-					return
-				}
+			if !c.sendPing() {
+				return
 			}
 		}
 	}
+}
+
+// cleanupConnection closes the ticker and connection when writePump exits.
+func (c *Client) cleanupConnection(ticker *time.Ticker) {
+	ticker.Stop()
+	if c.conn != nil {
+		c.conn.Close()
+	}
+}
+
+// handleOutgoingMessage processes an outgoing message from the send channel.
+func (c *Client) handleOutgoingMessage(message []byte, ok bool) bool {
+	if c.conn != nil {
+		_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	}
+
+	if !ok {
+		return c.sendCloseMessage()
+	}
+
+	if c.conn == nil {
+		return false
+	}
+
+	return c.writeMessageWithQueued(message)
+}
+
+// sendCloseMessage sends a close message to the WebSocket.
+func (c *Client) sendCloseMessage() bool {
+	if c.conn != nil {
+		_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+	}
+	return false
+}
+
+// writeMessageWithQueued writes a message and any queued messages.
+func (c *Client) writeMessageWithQueued(message []byte) bool {
+	w, err := c.conn.NextWriter(websocket.TextMessage)
+	if err != nil {
+		return false
+	}
+
+	_, _ = w.Write(message)
+
+	// Add queued messages to the current websocket message
+	c.writeQueuedMessages(w)
+
+	return w.Close() == nil
+}
+
+// writeQueuedMessages writes all queued messages from the send channel.
+func (c *Client) writeQueuedMessages(w io.WriteCloser) {
+	n := len(c.send)
+	for range n {
+		_, _ = w.Write([]byte{'\n'})
+		_, _ = w.Write(<-c.send)
+	}
+}
+
+// sendPing sends a ping message to keep the connection alive.
+func (c *Client) sendPing() bool {
+	if c.conn == nil {
+		return true
+	}
+
+	_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	return c.conn.WriteMessage(websocket.PingMessage, nil) == nil
 }
 
 // Hub maintains the set of active clients and broadcasts messages to them.
@@ -198,83 +234,121 @@ func (h *Hub) Run(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
-			// Close all client connections
-			h.mu.Lock()
-			for client := range h.clients {
-				close(client.send)
-			}
-			h.mu.Unlock()
+			h.shutdown()
 			return
-
 		case client := <-h.register:
-			h.mu.Lock()
-			h.clients[client] = true
-			// Add client to their subscribed channels
-			client.mu.RLock()
-			for channel := range client.channels {
-				if _, ok := h.channels[channel]; !ok {
-					h.channels[channel] = make(map[*Client]bool)
-				}
-				h.channels[channel][client] = true
-			}
-			client.mu.RUnlock()
-			h.mu.Unlock()
-
+			h.handleRegister(client)
 		case client := <-h.unregister:
-			h.mu.Lock()
-			if _, ok := h.clients[client]; ok {
-				delete(h.clients, client)
-				close(client.send)
-
-				// Remove client from all channels
-				for channel := range h.channels {
-					if clients, ok := h.channels[channel]; ok {
-						delete(clients, client)
-						if len(clients) == 0 {
-							delete(h.channels, channel)
-						}
-					}
-				}
-			}
-			h.mu.Unlock()
-
+			h.handleUnregister(client)
 		case message := <-h.broadcast:
-			h.mu.RLock()
-			data, err := json.Marshal(message)
-			if err != nil {
-				h.mu.RUnlock()
-				continue
-			}
-
-			// Broadcast to all if channel is "*"
-			if message.Channel == "*" {
-				for client := range h.clients {
-					select {
-					case client.send <- data:
-					default:
-						// Client buffer full, close it
-						go func(c *Client) {
-							h.unregister <- c
-						}(client)
-					}
-				}
-			} else {
-				// Broadcast to specific channel
-				if clients, ok := h.channels[message.Channel]; ok {
-					for client := range clients {
-						select {
-						case client.send <- data:
-						default:
-							// Client buffer full, close it
-							go func(c *Client) {
-								h.unregister <- c
-							}(client)
-						}
-					}
-				}
-			}
-			h.mu.RUnlock()
+			h.handleBroadcast(message)
 		}
+	}
+}
+
+// shutdown closes all client connections.
+func (h *Hub) shutdown() {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	for client := range h.clients {
+		close(client.send)
+	}
+}
+
+// handleRegister registers a new client and adds it to its subscribed channels.
+func (h *Hub) handleRegister(client *Client) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	h.clients[client] = true
+	h.addClientToChannels(client)
+}
+
+// addClientToChannels adds a client to all its subscribed channels.
+func (h *Hub) addClientToChannels(client *Client) {
+	client.mu.RLock()
+	defer client.mu.RUnlock()
+
+	for channel := range client.channels {
+		if _, ok := h.channels[channel]; !ok {
+			h.channels[channel] = make(map[*Client]bool)
+		}
+		h.channels[channel][client] = true
+	}
+}
+
+// handleUnregister removes a client and cleans up its channel subscriptions.
+func (h *Hub) handleUnregister(client *Client) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	if _, ok := h.clients[client]; !ok {
+		return
+	}
+
+	delete(h.clients, client)
+	close(client.send)
+	h.removeClientFromAllChannels(client)
+}
+
+// removeClientFromAllChannels removes a client from all channels.
+func (h *Hub) removeClientFromAllChannels(client *Client) {
+	for channel := range h.channels {
+		if clients, ok := h.channels[channel]; ok {
+			delete(clients, client)
+			if len(clients) == 0 {
+				delete(h.channels, channel)
+			}
+		}
+	}
+}
+
+// handleBroadcast processes a broadcast message.
+func (h *Hub) handleBroadcast(message *Message) {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	data, err := json.Marshal(message)
+	if err != nil {
+		return
+	}
+
+	if message.Channel == "*" {
+		h.broadcastToAll(data)
+	} else {
+		h.broadcastToChannel(message.Channel, data)
+	}
+}
+
+// broadcastToAll sends a message to all connected clients.
+func (h *Hub) broadcastToAll(data []byte) {
+	for client := range h.clients {
+		h.sendToClient(client, data)
+	}
+}
+
+// broadcastToChannel sends a message to all clients in a specific channel.
+func (h *Hub) broadcastToChannel(channel string, data []byte) {
+	clients, ok := h.channels[channel]
+	if !ok {
+		return
+	}
+
+	for client := range clients {
+		h.sendToClient(client, data)
+	}
+}
+
+// sendToClient sends data to a client, unregistering if the buffer is full.
+func (h *Hub) sendToClient(client *Client, data []byte) {
+	select {
+	case client.send <- data:
+	default:
+		// Client buffer full, close it
+		go func(c *Client) {
+			h.unregister <- c
+		}(client)
 	}
 }
 
@@ -294,7 +368,7 @@ func (h *Hub) Publish(channel, msgType string, data interface{}) {
 
 // HandleWebSocket handles WebSocket connection upgrades.
 func (h *Hub) HandleWebSocket(w http.ResponseWriter, r *http.Request) error {
-	conn, err := upgrader.Upgrade(w, r, nil)
+	conn, err := defaultUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return err
 	}
