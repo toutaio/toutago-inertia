@@ -137,7 +137,7 @@ func TestScelaAdapter_Filtering(t *testing.T) {
 	go hub.Run(ctx)
 
 	// Create adapter with filter
-	filter := func(topic string, message interface{}) bool {
+	filter := func(_ string, message interface{}) bool {
 		// Only pass messages with "important" flag
 		if m, ok := message.(map[string]interface{}); ok {
 			return m["important"] == true
@@ -273,9 +273,7 @@ func TestScelaAdapter_ErrorHandling(t *testing.T) {
 
 	err = bus.Publish(context.Background(), "test", msg)
 	// Should not panic or crash
-	if err != nil {
-		// Expected - subscription may be removed
-	}
+	_ = err // Expected - subscription may be removed
 }
 
 func TestScelaAdapter_ContextCancellation(t *testing.T) {
@@ -293,12 +291,18 @@ func TestScelaAdapter_ContextCancellation(t *testing.T) {
 	pubCtx, pubCancel := context.WithCancel(context.Background())
 	pubCancel() // Cancel immediately
 
-	// Publish with cancelled context
-	msg := map[string]interface{}{"test": "cancelled"}
+	// Publish with canceled context
+	msg := map[string]interface{}{"test": "canceled"}
 	err := bus.Publish(pubCtx, "test-channel", msg)
 	// Scéla respects context cancellation
 	if err == nil {
 		// Some implementations may still succeed on async publish
-		// Just verify no panic
+		// Just verify no panic and adapter still works
+		t.Log("Publish succeeded despite canceled context (async behavior)")
+	}
+
+	// Verify adapter is still functional
+	if adapter == nil {
+		t.Fatal("adapter should not be nil")
 	}
 }

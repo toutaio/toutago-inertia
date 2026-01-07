@@ -18,20 +18,20 @@ type ScelaAdapter struct {
 	closed       bool
 }
 
-// MessageFilter determines if a message should be forwarded to WebSocket
+// MessageFilter determines if a message should be forwarded to WebSocket.
 type MessageFilter func(topic string, message interface{}) bool
 
-// ScelaOption configures the Scéla adapter
+// ScelaOption configures the Scéla adapter.
 type ScelaOption func(*ScelaAdapter)
 
-// WithFilter sets a message filter
+// WithFilter sets a message filter.
 func WithFilter(filter MessageFilter) ScelaOption {
 	return func(a *ScelaAdapter) {
 		a.filter = filter
 	}
 }
 
-// NewScelaAdapter creates a new Scéla-to-WebSocket adapter
+// NewScelaAdapter creates a new Scéla-to-WebSocket adapter.
 func NewScelaAdapter(bus scela.Bus, hub *Hub, opts ...ScelaOption) *ScelaAdapter {
 	adapter := &ScelaAdapter{
 		bus: bus,
@@ -53,8 +53,8 @@ func NewScelaAdapter(bus scela.Bus, hub *Hub, opts ...ScelaOption) *ScelaAdapter
 	return adapter
 }
 
-// handleMessage is called by Scéla when a message is published
-func (a *ScelaAdapter) handleMessage(ctx context.Context, msg scela.Message) error {
+// handleMessage is called by Scéla when a message is published.
+func (a *ScelaAdapter) handleMessage(_ context.Context, msg scela.Message) error {
 	a.mu.RLock()
 	if a.closed {
 		a.mu.RUnlock()
@@ -104,7 +104,7 @@ func (a *ScelaAdapter) handleMessage(ctx context.Context, msg scela.Message) err
 	return nil
 }
 
-// matchesPattern checks if a channel pattern matches a topic
+// matchesPattern checks if a channel pattern matches a topic.
 func matchesPattern(pattern, topic string) bool {
 	// Exact match
 	if pattern == topic {
@@ -139,7 +139,7 @@ func matchesPattern(pattern, topic string) bool {
 	return false
 }
 
-// Close stops the adapter and unsubscribes from Scéla
+// Close stops the adapter and unsubscribes from Scéla.
 func (a *ScelaAdapter) Close() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -151,7 +151,7 @@ func (a *ScelaAdapter) Close() error {
 	a.closed = true
 
 	if a.subscription != nil {
-		a.subscription.Unsubscribe()
+		_ = a.subscription.Unsubscribe()
 	}
 
 	return nil

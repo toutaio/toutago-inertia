@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Ritual Grove Integration Guide** - Complete guide for integrating Inertia into rituals
+  - Documentation for adding Inertia support to existing rituals
+  - Examples of conditional frontend scaffolding
+  - Template structure and best practices
+  - Migration guide from traditional templates to Inertia
+  - Reference to fullstack-inertia-vue ritual
+- **Code Quality Improvements** - Fixed linter warnings
+  - Fixed godot warnings (comment periods in realtime/scela.go)
+  - Added assertion to TestHubRunAndStop to use test parameter
+  - All linter issues resolved except cognitive complexity warnings
 - **E2E Testing Suite** - Comprehensive Playwright end-to-end tests
   - Todo app E2E tests with full CRUD operations
   - Chat app E2E tests with multi-tab real-time updates

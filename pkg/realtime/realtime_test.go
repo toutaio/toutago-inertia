@@ -34,6 +34,11 @@ func TestHubRunAndStop(t *testing.T) {
 	// Give it time to start
 	time.Sleep(10 * time.Millisecond)
 
+	// Verify hub is initialized
+	if hub.clients == nil {
+		t.Error("hub clients map should be initialized")
+	}
+
 	// Stop the hub
 	cancel()
 
