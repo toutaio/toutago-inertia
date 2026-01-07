@@ -13,6 +13,17 @@ This will generate `examples/types/generated.ts` with TypeScript interfaces for:
 - Post  
 - DashboardData
 
+## Watch Mode
+
+For development, use the watch mode example to automatically regenerate types when Go files change:
+
+```bash
+cd ../typegen-watch
+go run main.go
+```
+
+See [typegen-watch/README.md](../typegen-watch/README.md) for details on automatic type regeneration.
+
 ## Integration with Build Process
 
 You can integrate type generation into your build process:

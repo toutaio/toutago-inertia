@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **TypeScript Watch Mode** - Automatic type regeneration on file changes
+  - New `Watcher` type in pkg/typegen for file watching
+  - Support for watching individual files and directories
+  - Debouncing to prevent excessive regenerations
+  - Error handling with custom error handlers
+  - Graceful shutdown on interrupt signals
+  - 8 comprehensive tests with 84.8% coverage
+  - Dependency: github.com/fsnotify/fsnotify@v1.9.0
+  - Example in examples/typegen-watch with README
+  - Updated typegen example README with watch mode reference
 - **Ritual Grove Integration Guide** - Complete guide for integrating Inertia into rituals
   - Documentation for adding Inertia support to existing rituals
   - Examples of conditional frontend scaffolding
