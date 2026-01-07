@@ -121,11 +121,22 @@ defineProps({
 ## Documentation
 
 - [Getting Started Guide](docs/getting-started.md)
-- [HTMX Integration Guide](docs/HTMX.md) - **NEW!** Complete HTMX support
+- [Ritual Grove Integration](RITUAL_GROVE.md) - **NEW!** Use Inertia with rituals
+- [HTMX Integration Guide](docs/HTMX.md) - Complete HTMX support
 - [Server-Side Rendering](docs/ssr.md)
 - [TypeScript Integration](docs/typescript.md)
 - [Real-time Updates](docs/realtime.md)
 - [API Reference](https://pkg.go.dev/github.com/toutaio/toutago-inertia)
+
+## Quick Start with Ritual Grove
+
+Create a new full-stack Inertia.js application instantly:
+
+```bash
+ritual run fullstack-inertia-vue
+```
+
+See [RITUAL_GROVE.md](RITUAL_GROVE.md) for integration guide and best practices.
 
 ## Examples
 
