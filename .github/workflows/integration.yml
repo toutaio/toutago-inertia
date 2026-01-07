@@ -85,8 +85,13 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Run Go tests
+      - name: Run Go tests (Unix)
+        if: runner.os != 'Windows'
         run: go test -v ./...
+
+      - name: Run Go tests (Windows - excluding SSR)
+        if: runner.os == 'Windows'
+        run: go test -v $(go list ./... | Select-String -NotMatch "/ssr")
 
       - name: Clean NPM directories (Unix)
         if: runner.os != 'Windows'
@@ -112,7 +117,14 @@ jobs:
       - name: Run NPM tests
         run: npm test
 
-      - name: Build packages
+      - name: Build packages (Unix)
+        if: runner.os != 'Windows'
         run: |
           go build ./...
+          npm run build
+
+      - name: Build packages (Windows - excluding SSR)
+        if: runner.os == 'Windows'
+        run: |
+          go build $(go list ./... | Select-String -NotMatch "/ssr")
           npm run build
