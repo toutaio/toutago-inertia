@@ -1,5 +1,5 @@
 export { createInertiaApp, router } from './app'
-export { default as Link } from './components/Link.vue'
+export { Link } from './components/Link'
 export { default as Head } from './components/Head.vue'
 export { useForm } from './composables/useForm'
 export { usePage } from './composables/usePage'
@@ -20,3 +20,4 @@ export type {
 } from './types'
 
 export type { PageWithLayout } from './utils/layout'
+export type { LinkProps } from './components/Link'

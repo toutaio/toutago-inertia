@@ -1,12 +1,11 @@
 module github.com/toutaio/toutago-inertia
 
-go 1.24.1
+go 1.24.0
 
 require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/stretchr/testify v1.11.1
-	github.com/toutaio/toutago-cosan-router v1.1.0
 	github.com/toutaio/toutago-scela-bus v1.5.5
 	rogchap.com/v8go v0.9.0
 )
