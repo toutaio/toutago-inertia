@@ -1,6 +1,6 @@
 module github.com/toutaio/toutago-inertia/examples/fullstack
 
-go 1.22
+go 1.22.9
 
 require (
 	github.com/toutaio/toutago-cosan-router v0.1.0
@@ -8,3 +8,5 @@ require (
 )
 
 replace github.com/toutaio/toutago-inertia => ../..
+
+replace github.com/toutaio/toutago-cosan-router => /home/nestor/Proyects/touta-for-go/toutago-cosan-router

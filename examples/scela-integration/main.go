@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/toutaio/toutago-cosan-router/pkg/cosan"
+	"github.com/toutaio/toutago-cosan-router"
 	"github.com/toutaio/toutago-inertia/pkg/inertia"
 	"github.com/toutaio/toutago-inertia/pkg/realtime"
 	"github.com/toutaio/toutago-scela-bus/pkg/scela"
